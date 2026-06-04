@@ -30,9 +30,9 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
       width: '100%', height: '100%',
       backgroundColor: '#ffffff',
       fontFamily: 'Arial, sans-serif',
-      color: '#000', fontSize: '11.5px', lineHeight: 1.35,
+      color: '#000', fontSize: '12.5px', lineHeight: 1.4,
       boxSizing: 'border-box',
-      padding: '24px 28px',
+      padding: '20px 24px',
       display: 'flex', flexDirection: 'column',
     },
     border: {
@@ -46,7 +46,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
     watermark: {
       position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
       opacity: 0.07, pointerEvents: 'none', zIndex: 0,
-      width: '340px', height: '340px',
+      width: '480px', height: '480px',
     },
     watermarkImg: {
       width: '100%', height: '100%', objectFit: 'contain',
@@ -60,73 +60,73 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
     // --- HEADER ---
     header: {
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      padding: '14px 16px 10px 16px',
+      padding: '16px 18px 12px 18px',
     },
-    logo: { maxHeight: '90px', maxWidth: '180px', objectFit: 'contain' },
+    logo: { maxHeight: '100px', maxWidth: '190px', objectFit: 'contain' },
     agentBlock: { textAlign: 'right' },
     agentName: {
-      fontSize: '24px', fontWeight: 'bold', color: '#1a3c5e',
-      textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '4px',
+      fontSize: '26px', fontWeight: 'bold', color: '#1a3c5e',
+      textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '5px',
     },
-    agentContact: { fontSize: '13px', fontWeight: 'bold', color: '#000', marginTop: '1px' },
+    agentContact: { fontSize: '14px', fontWeight: 'bold', color: '#000', marginTop: '2px' },
 
     // --- TAX INVOICE BANNER ---
     banner: {
       backgroundColor: '#7ea7b3', textAlign: 'center',
-      fontWeight: 'bold', fontSize: '20px', color: '#000',
-      padding: '5px 0', textTransform: 'uppercase', letterSpacing: '1.5px',
+      fontWeight: 'bold', fontSize: '22px', color: '#000',
+      padding: '6px 0', textTransform: 'uppercase', letterSpacing: '1.5px',
       borderTop: '1.5px solid #000', borderBottom: '1.5px solid #000',
     },
 
     // --- META ROW ---
     metaRow: {
       display: 'flex', justifyContent: 'space-between',
-      padding: '5px 16px', fontSize: '12px', fontWeight: 'bold',
+      padding: '6px 18px', fontSize: '13px', fontWeight: 'bold',
       borderBottom: '1.5px solid #000',
     },
 
     // --- TO SECTION ---
     toBox: {
-      padding: '8px 16px', fontSize: '11.5px', lineHeight: 1.35,
+      padding: '10px 18px', fontSize: '12.5px', lineHeight: 1.4,
       borderBottom: '1.5px solid #000',
     },
 
     // --- CHANNEL PARTNER META ---
     cpRow: {
-      display: 'flex', borderBottom: '1.5px solid #000', fontSize: '10px',
+      display: 'flex', borderBottom: '1.5px solid #000', fontSize: '11px',
     },
     cpLeft: {
-      flex: 1.3, padding: '6px 12px', borderRight: '1.5px solid #000', lineHeight: 1.3,
+      flex: 1.3, padding: '8px 14px', borderRight: '1.5px solid #000', lineHeight: 1.3,
     },
     cpRight: {
-      flex: 1, padding: '6px 12px', fontWeight: 'bold', lineHeight: 1.6,
+      flex: 1, padding: '8px 14px', fontWeight: 'bold', lineHeight: 1.6,
     },
 
     // --- TABLE ---
     table: {
-      width: 'calc(100% - 32px)', margin: '10px 16px 0 16px',
-      borderCollapse: 'collapse', fontSize: '11.5px',
+      width: 'calc(100% - 36px)', margin: '12px 18px 0 18px',
+      borderCollapse: 'collapse', fontSize: '12.5px',
     },
     th: {
-      border: '1.5px solid #000', padding: '5px 8px',
+      border: '1.5px solid #000', padding: '6px 10px',
       fontWeight: 'bold', textAlign: 'center', backgroundColor: '#fff',
     },
     td: {
-      border: '1.5px solid #000', padding: '6px 10px',
+      border: '1.5px solid #000', padding: '8px 12px',
       verticalAlign: 'top',
     },
     pItem: {
-      display: 'grid', gridTemplateColumns: '120px 20px auto',
-      margin: '4px 0', lineHeight: 1.4,
+      display: 'grid', gridTemplateColumns: '130px 20px auto',
+      margin: '5px 0', lineHeight: 1.4,
     },
 
     // --- FOOTER ---
     footer: {
       display: 'flex', justifyContent: 'space-between',
-      padding: '0 16px',
-      marginTop: '15px',
-      fontSize: '11px', lineHeight: 1.35,
-      paddingBottom: '16px', paddingTop: '10px',
+      padding: '0 18px',
+      marginTop: '20px',
+      fontSize: '12px', lineHeight: 1.4,
+      paddingBottom: '20px', paddingTop: '12px',
     },
     bankBlock: { flex: 1.5 },
     sigBlock: {
