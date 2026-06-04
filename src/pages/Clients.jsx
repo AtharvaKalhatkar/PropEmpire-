@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, UserPlus, Phone, Trash2, Calendar, FileText, ChevronDown, ChevronUp, Search, MessageCircle } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import { getClients, addClient, deleteClient, updateClientStatus } from '../db';
 
 export default function Clients() {
@@ -19,6 +20,30 @@ export default function Clients() {
   const loadClients = async () => {
     const data = await getClients();
     setClients(data);
+  };
+
+  const handleExportExcel = () => {
+    if (clients.length === 0) {
+      alert("No clients to export.");
+      return;
+    }
+    const exportData = clients.map((client, index) => ({
+      'Sr. No.': index + 1,
+      'Full Name': client.name || '',
+      'Phone Number': client.phone || '',
+      'Email ID': client.email || '',
+      'Status': client.status || '',
+      'Interested Project': client.project || '',
+      'Property Type': client.propertyType || '',
+      'Budget Range': client.budget || '',
+      'Lead Source': client.leadSource || '',
+      'Next Follow-up Date': client.nextFollowUp ? new Date(client.nextFollowUp).toLocaleDateString('en-GB') : '',
+      'Notes / History': client.notes || ''
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Clients List');
+    XLSX.writeFile(workbook, 'PropEmpire_Clients.xlsx');
   };
 
   useEffect(() => {
@@ -80,11 +105,16 @@ export default function Clients() {
 
   return (
     <div className="animate-fade-in" style={{ paddingBottom: '4rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <h1 style={{ margin: 0 }}>Clients & Leads</h1>
-        <button className="btn btn-primary" onClick={() => setIsAdding(!isAdding)}>
-          <UserPlus size={20} /> Add Client
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <button className="btn btn-secondary" onClick={handleExportExcel} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <FileText size={16} /> Export Excel
+          </button>
+          <button className="btn btn-primary" onClick={() => setIsAdding(!isAdding)}>
+            <UserPlus size={16} /> Add Client
+          </button>
+        </div>
       </div>
 
       <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
@@ -186,10 +216,10 @@ export default function Clients() {
       )}
 
       <div className="card" style={{ padding: 0 }}>
-        {clients.length === 0 ? (
+        {filteredClients.length === 0 ? (
           <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
             <Users size={48} style={{ margin: '0 auto 1rem auto', opacity: 0.5 }} />
-            <p>No clients match your search.</p>
+            <p>{clients.length === 0 ? 'No clients added yet. Start by adding your first client!' : 'No clients match your search.'}</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column' }}>

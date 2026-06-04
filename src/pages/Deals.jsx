@@ -145,7 +145,7 @@ export default function Deals() {
         </div>
         <div>
           <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-light)', opacity: 0.9 }}>Total Revenue ({new Date(selectedMonth + '-01').toLocaleString('default', { month: 'long', year: 'numeric' })})</p>
-          <h2 style={{ margin: 0, fontSize: '2.5rem', fontWeight: '800' }}>₹ {totalRevenue.toLocaleString('en-IN')}</h2>
+          <h2 style={{ margin: 0, fontSize: '2rem', fontWeight: '800', color: 'white' }}>₹ {totalRevenue.toLocaleString('en-IN')}</h2>
         </div>
       </div>
 
@@ -221,7 +221,7 @@ export default function Deals() {
           
           <div style={{ padding: '2rem 1rem', display: 'flex', justifyContent: 'center', flex: 1 }}>
             <div style={{ width: '100%', maxWidth: '850px', overflowX: 'auto', backgroundColor: 'var(--surface-color)', padding: '1rem', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-md)' }}>
-              <div id="printable-invoice-modal" style={{ width: '800px' }}>
+              <div id="printable-invoice-modal" style={{ width: '794px', height: '1123px', boxSizing: 'border-box', backgroundColor: '#ffffff' }}>
                 <InvoicePreview 
                   data={viewingInvoice} 
                   profile={profile}
