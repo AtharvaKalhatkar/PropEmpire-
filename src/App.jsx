@@ -5,6 +5,7 @@ import Deals from './pages/Deals';
 import CreateInvoice from './pages/CreateInvoice';
 import Clients from './pages/Clients';
 import Settings from './pages/Settings';
+import logoImg from './assets/hero.png';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -29,7 +30,7 @@ function App() {
         {/* Mobile Header */}
         <header className="app-header">
           <div className="app-logo">
-            <Home size={28} color="var(--primary-blue)" />
+            <img src={logoImg} alt="PropEmpire" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
             PropEmpire
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
