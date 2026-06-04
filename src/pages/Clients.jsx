@@ -14,6 +14,7 @@ export default function Clients() {
     leadSource: '', nextFollowUp: '', notes: '' 
   };
   const [newClient, setNewClient] = useState(initialForm);
+  const [clientToDelete, setClientToDelete] = useState(null);
 
   const loadClients = async () => {
     const data = await getClients();
@@ -39,15 +40,24 @@ export default function Clients() {
   };
 
   const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to delete this client?')) {
+    try {
       await deleteClient(id);
+      setClientToDelete(null);
       loadClients();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete client: " + err.message);
     }
   };
 
   const handleStatusChange = async (id, status) => {
-    await updateClientStatus(id, status);
-    loadClients();
+    try {
+      await updateClientStatus(id, status);
+      loadClients();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update status.");
+    }
   };
 
   const toggleExpand = (id) => {
@@ -227,7 +237,7 @@ export default function Clients() {
                       <button onClick={() => toggleExpand(client.id)} style={{ background: 'none', border: 'none', color: 'var(--primary-blue)', cursor: 'pointer', padding: '0.25rem' }}>
                         {expandedId === client.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                       </button>
-                      <button onClick={() => handleDelete(client.id)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.25rem' }}>
+                      <button onClick={() => setClientToDelete(client)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.25rem' }}>
                         <Trash2 size={18} />
                       </button>
                     </div>
@@ -252,6 +262,20 @@ export default function Clients() {
           </div>
         )}
       </div>
+
+      {/* Custom Delete Confirmation Modal */}
+      {clientToDelete && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="card animate-fade-in" style={{ width: '100%', maxWidth: '400px', backgroundColor: 'var(--surface-color)' }}>
+            <h3 style={{ marginTop: 0, color: '#ef4444' }}>Delete Client</h3>
+            <p style={{ margin: '1rem 0' }}>Are you sure you want to permanently delete <strong>{clientToDelete.name}</strong>? This action cannot be undone.</p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem' }}>
+              <button className="btn btn-secondary" onClick={() => setClientToDelete(null)}>Cancel</button>
+              <button className="btn btn-primary" style={{ backgroundColor: '#ef4444', border: 'none' }} onClick={() => handleDelete(clientToDelete.id)}>Yes, Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
