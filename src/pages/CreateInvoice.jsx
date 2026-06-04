@@ -47,14 +47,25 @@ export default function CreateInvoice({ onNavigate }) {
     return calculateBrokerage() + Number(formData.executiveBonus);
   };
 
-  const handlePreview = async () => {
+  const ensureSaved = async () => {
+    if (!formData.customerName) {
+      alert("Please enter at least a Customer Name before saving or exporting.");
+      return false;
+    }
     try {
-      // Auto-save when previewing
-      await saveInvoice(formData);
-      setMode('preview');
+      const saved = await saveInvoice(formData);
+      if (!formData.id && saved?.id) {
+        setFormData(prev => ({ ...prev, id: saved.id }));
+      }
+      return true;
     } catch (error) {
       alert("Failed to save invoice to database: " + error.message);
+      return false;
     }
+  };
+
+  const handlePreview = () => {
+    setMode('preview');
   };
 
   const getFileName = () => {
@@ -62,6 +73,7 @@ export default function CreateInvoice({ onNavigate }) {
   };
 
   const handleSavePdf = async () => {
+    if (!(await ensureSaved())) return;
     const blob = await generatePdfBlobFromElement('printable-invoice');
     if (blob) {
       downloadPdfBlob(blob, getFileName());
@@ -69,6 +81,7 @@ export default function CreateInvoice({ onNavigate }) {
   };
 
   const handleOpenPdf = async () => {
+    if (!(await ensureSaved())) return;
     const blob = await generatePdfBlobFromElement('printable-invoice');
     if (blob) {
       const url = URL.createObjectURL(blob);
@@ -84,6 +97,7 @@ export default function CreateInvoice({ onNavigate }) {
     const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 
     try {
+      if (!(await ensureSaved())) return;
       const blob = await generatePdfBlobFromElement('printable-invoice');
       const file = new File([blob], getFileName(), { type: 'application/pdf' });
       
@@ -114,6 +128,7 @@ export default function CreateInvoice({ onNavigate }) {
     const emailUrl = `mailto:${formData.customerEmail}?subject=${subject}&body=${body}`;
 
     try {
+      if (!(await ensureSaved())) return;
       const blob = await generatePdfBlobFromElement('printable-invoice');
       const file = new File([blob], getFileName(), { type: 'application/pdf' });
       
@@ -142,6 +157,11 @@ export default function CreateInvoice({ onNavigate }) {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
           <button className="btn btn-secondary" onClick={() => setMode('edit')}>
             <ArrowLeft size={16} /> Edit
+          </button>
+          <button className="btn btn-secondary" onClick={async () => {
+            if (await ensureSaved()) alert("Invoice saved to Deals successfully!");
+          }}>
+            <Save size={16} /> Save to Deals
           </button>
           <button className="btn btn-primary" onClick={handleSavePdf}>
             <Printer size={16} /> Save as PDF
