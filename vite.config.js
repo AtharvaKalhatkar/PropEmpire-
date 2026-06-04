@@ -17,6 +17,8 @@ export default defineConfig({
         theme_color: '#0A2540',
         background_color: '#F8FAFC',
         display: 'standalone',
+        start_url: '/PropEmpire-/',
+        scope: '/PropEmpire-/',
         icons: [
           {
             src: 'pwa-192x192.png',
