@@ -1,5 +1,5 @@
 import React from 'react';
-import logoImg from '../assets/hero.png';
+import logoImg from '../assets/logo-new.png';
 
 const numberToWords = (num) => {
   if (num === 0) return 'Zero';
@@ -41,10 +41,8 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
       overflow: 'hidden',
     },
     watermark: {
-      position: 'absolute', top: '18%', left: '12%', right: '12%', bottom: '18%',
-      backgroundImage: `url(${logoImg})`,
-      backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'contain',
-      opacity: 0.04, pointerEvents: 'none', zIndex: 0,
+      position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)',
+      opacity: 0.08, pointerEvents: 'none', zIndex: 0,
     },
     inner: {
       position: 'relative', zIndex: 1,
