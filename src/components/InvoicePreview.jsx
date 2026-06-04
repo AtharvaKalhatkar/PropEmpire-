@@ -2,7 +2,7 @@ import React from 'react';
 import logoImg from '../assets/COMPANY_LOGO.png';
 
 const numberToWords = (num) => {
-  if (num === 0) return 'Zero Only';
+  if (num === 0) return 'Zero';
   const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
   const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
   const inWords = (n) => {
@@ -17,7 +17,7 @@ const numberToWords = (num) => {
     str += (nArray[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(nArray[5])] || b[nArray[5][0]] + ' ' + a[nArray[5][1]]) : '';
     return str.trim();
   };
-  return inWords(Math.round(num)) + ' Only';
+  return inWords(Math.round(num));
 };
 
 export default function InvoicePreview({ data, profile, brokerageAmount, totalAmount }) {
@@ -37,11 +37,11 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
     },
     border: {
       border: '1.5px solid #000',
-      flex: 1,
       display: 'flex', flexDirection: 'column',
       position: 'relative',
       boxSizing: 'border-box',
       overflow: 'hidden',
+      // No flex: 1, so it only grows as much as needed
     },
     watermark: {
       position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
@@ -54,7 +54,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
     inner: {
       position: 'relative', zIndex: 1,
       display: 'flex', flexDirection: 'column',
-      flex: 1, height: '100%',
+      height: '100%',
     },
 
     // --- HEADER ---
@@ -116,16 +116,17 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
       verticalAlign: 'top',
     },
     pItem: {
-      display: 'grid', gridTemplateColumns: '150px 20px auto',
+      display: 'grid', gridTemplateColumns: '120px 20px auto',
       margin: '4px 0', lineHeight: 1.4,
     },
 
     // --- FOOTER ---
     footer: {
       display: 'flex', justifyContent: 'space-between',
-      padding: '0 16px', marginTop: 'auto',
+      padding: '0 16px',
+      marginTop: '15px',
       fontSize: '11px', lineHeight: 1.35,
-      paddingBottom: '16px', paddingTop: '14px',
+      paddingBottom: '16px', paddingTop: '10px',
     },
     bankBlock: { flex: 1.5 },
     sigBlock: {
@@ -221,7 +222,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
                     <div style={s.pItem}><span>Project Name.</span><span>:-</span><span style={{ fontWeight: 'bold' }}>{data.projectName}</span></div>
                     <div style={s.pItem}><span>Tower</span><span>:-</span><span style={{ fontWeight: 'bold' }}>{data.tower}</span></div>
                     <div style={s.pItem}><span>Flat No</span><span>:-</span><span style={{ fontWeight: 'bold' }}>{data.flatNo}</span></div>
-                    <div style={s.pItem}><span>Agreement Value (AV)</span><span>:-</span><span style={{ fontWeight: 'bold' }}>{Number(data.agreementValue).toLocaleString('en-IN')} /-</span></div>
+                    <div style={s.pItem}><span>Considerable Value</span><span>:-</span><span style={{ fontWeight: 'bold' }}>{Number(data.agreementValue).toLocaleString('en-IN')} /-</span></div>
                     <div style={s.pItem}><span>Brokerage</span><span>:-</span><span style={{ fontWeight: 'bold' }}>{data.brokeragePercent} %</span></div>
                   </div>
                 </td>
@@ -267,7 +268,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
               {/* Amount in words */}
               <tr>
                 <td colSpan="4" style={{ ...s.td, fontWeight: 'bold', fontSize: '12px', padding: '6px 10px', textAlign: 'center' }}>
-                  Amount in words :-  {numberToWords(totalAmount)}
+                  Amount in words :- {numberToWords(totalAmount)}
                 </td>
               </tr>
             </tbody>
