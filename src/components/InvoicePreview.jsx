@@ -229,7 +229,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
         {/* Bill To */}
         <div style={styles.toSection}>
           <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>
-            To - <span style={{ fontWeight: '600' }}>{data.customerName || 'Client Name'}</span>
+            To - <span style={{ fontWeight: '600' }}>{data.billedToName || data.customerName || 'Developer Name'}</span>
           </div>
           <div style={{ paddingLeft: '32px', color: '#000000', lineHeight: '1.5' }}>
             {data.billedToAddress && <div>{data.billedToAddress}</div>}

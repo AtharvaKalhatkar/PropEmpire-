@@ -96,15 +96,31 @@ export async function getInvoices() {
     console.error("Error fetching invoices:", error);
     return [];
   }
-  return data || [];
+  
+  return (data || []).map(invoice => {
+    if (invoice.billedToAddress && invoice.billedToAddress.startsWith('DEVELOPER_NAME:')) {
+      const parts = invoice.billedToAddress.split('\n');
+      invoice.billedToName = parts[0].replace('DEVELOPER_NAME:', '');
+      invoice.billedToAddress = parts.slice(1).join('\n');
+    }
+    return invoice;
+  });
 }
 
 export async function saveInvoice(invoiceData) {
+  let payload = { ...invoiceData };
+  
+  // Bundle billedToName into address to bypass schema limits
+  if (payload.billedToName) {
+    payload.billedToAddress = `DEVELOPER_NAME:${payload.billedToName}\n${payload.billedToAddress || ''}`;
+  }
+  delete payload.billedToName; // Remove from payload so it doesn't crash Supabase
+
   let response;
-  if (invoiceData.id) {
-    response = await supabase.from('invoices').update(invoiceData).eq('id', invoiceData.id).select().single();
+  if (payload.id) {
+    response = await supabase.from('invoices').update(payload).eq('id', payload.id).select().single();
   } else {
-    response = await supabase.from('invoices').insert([invoiceData]).select().single();
+    response = await supabase.from('invoices').insert([payload]).select().single();
   }
   
   if (response.error) {

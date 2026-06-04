@@ -10,6 +10,7 @@ export default function CreateInvoice({ onNavigate }) {
   const [formData, setFormData] = useState({
     invoiceNo: '1',
     date: new Date().toISOString().split('T')[0],
+    billedToName: '',
     billedToAddress: '',
     billedToGstin: '',
     customerName: '',
@@ -200,8 +201,12 @@ export default function CreateInvoice({ onNavigate }) {
       <div className="card" style={{ marginBottom: '2rem' }}>
         <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Billed To (Developer)</h2>
         <div className="form-group">
+          <label className="form-label">Company / Developer Name</label>
+          <input type="text" className="form-input" name="billedToName" value={formData.billedToName || ''} onChange={handleChange} />
+        </div>
+        <div className="form-group">
           <label className="form-label">Address</label>
-          <textarea className="form-input" name="billedToAddress" rows="3" value={formData.billedToAddress} onChange={handleChange}></textarea>
+          <textarea className="form-input" name="billedToAddress" rows="3" value={formData.billedToAddress || ''} onChange={handleChange}></textarea>
         </div>
         <div className="form-group">
           <label className="form-label">GSTIN</label>
