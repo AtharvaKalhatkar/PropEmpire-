@@ -20,6 +20,34 @@ function App() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    if (!window.location.hash) {
+      window.history.replaceState(null, '', '#dashboard');
+    } else {
+      const hashTab = window.location.hash.replace('#', '');
+      if (['dashboard', 'deals', 'invoice', 'clients', 'settings'].includes(hashTab)) {
+        setActiveTab(hashTab);
+      }
+    }
+
+    const handlePopState = () => {
+      const hashTab = window.location.hash.replace('#', '');
+      if (['dashboard', 'deals', 'invoice', 'clients', 'settings'].includes(hashTab)) {
+        setActiveTab(hashTab);
+      } else {
+        setActiveTab('dashboard');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    window.history.pushState(null, '', `#${tab}`);
+  };
+
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
@@ -37,15 +65,15 @@ function App() {
             <button onClick={toggleTheme} style={{ background: 'none', border: 'none', color: 'var(--text-main)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {theme === 'light' ? <Moon size={24} /> : <Sun size={24} />}
             </button>
-            <SettingsIcon size={24} color="var(--text-muted)" onClick={() => setActiveTab('settings')} style={{ cursor: 'pointer' }} />
+            <SettingsIcon size={24} color="var(--text-muted)" onClick={() => handleTabChange('settings')} style={{ cursor: 'pointer' }} />
           </div>
         </header>
 
         {/* Main Content Area */}
         <main className="main-content animate-fade-in">
-          {activeTab === 'dashboard' && <Dashboard onNavigate={setActiveTab} />}
+          {activeTab === 'dashboard' && <Dashboard onNavigate={handleTabChange} />}
           {activeTab === 'deals' && <Deals />}
-          {activeTab === 'invoice' && <CreateInvoice onNavigate={setActiveTab} />}
+          {activeTab === 'invoice' && <CreateInvoice onNavigate={handleTabChange} />}
           {activeTab === 'clients' && <Clients />}
           {activeTab === 'settings' && <Settings />}
         </main>
@@ -53,19 +81,19 @@ function App() {
 
       {/* Mobile Bottom Navigation */}
       <nav className="bottom-nav">
-        <a href="#" className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setActiveTab('dashboard'); }}>
+        <a href="#dashboard" className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleTabChange('dashboard'); }}>
           <Home />
           <span>Home</span>
         </a>
-        <a href="#" className={`nav-item ${activeTab === 'deals' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setActiveTab('deals'); }}>
+        <a href="#deals" className={`nav-item ${activeTab === 'deals' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleTabChange('deals'); }}>
           <TrendingUp />
           <span>Deals</span>
         </a>
-        <a href="#" className={`nav-item ${activeTab === 'invoice' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setActiveTab('invoice'); }}>
+        <a href="#invoice" className={`nav-item ${activeTab === 'invoice' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleTabChange('invoice'); }}>
           <FileText />
           <span>Invoice</span>
         </a>
-        <a href="#" className={`nav-item ${activeTab === 'clients' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); setActiveTab('clients'); }}>
+        <a href="#clients" className={`nav-item ${activeTab === 'clients' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleTabChange('clients'); }}>
           <Users />
           <span>Clients</span>
         </a>
