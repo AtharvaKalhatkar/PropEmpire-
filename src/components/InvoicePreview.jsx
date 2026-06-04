@@ -26,7 +26,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
     page: {
       width: '100%', height: '100%',
       backgroundColor: '#ffffff',
-      fontFamily: 'Calibri, Arial, sans-serif',
+      fontFamily: 'Arial, sans-serif',
       color: '#000', fontSize: '11.5px', lineHeight: 1.35,
       boxSizing: 'border-box',
       padding: '24px 28px',
@@ -111,8 +111,8 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
       verticalAlign: 'top',
     },
     pItem: {
-      display: 'grid', gridTemplateColumns: '135px 20px auto',
-      margin: '3px 0', lineHeight: 1.3,
+      display: 'grid', gridTemplateColumns: '150px 20px auto',
+      margin: '4px 0', lineHeight: 1.4,
     },
 
     // --- FOOTER ---

@@ -3,6 +3,7 @@ import { FileText, Download, Calendar, DollarSign, Eye, X, Printer, MessageCircl
 import { getInvoices, getProfile } from '../db';
 import InvoicePreview from '../components/InvoicePreview';
 import { generatePdfBlobFromElement, downloadPdfBlob } from '../utils/pdf';
+import * as XLSX from 'xlsx';
 
 export default function Deals() {
   const [invoices, setInvoices] = useState([]);
@@ -57,6 +58,30 @@ export default function Deals() {
     } finally {
       setIsGeneratingPdf(false);
     }
+  };
+
+  const handleExportExcel = () => {
+    if (filteredInvoices.length === 0) {
+      alert("No bills to export for this month.");
+      return;
+    }
+    const exportData = filteredInvoices.map((inv, index) => ({
+      'Invoice No': inv.invoiceNo,
+      'Date': inv.date ? new Date(inv.date).toLocaleDateString('en-GB') : '',
+      'Customer Name': inv.customerName,
+      'Project Name': inv.projectName,
+      'Tower': inv.tower || '',
+      'Flat No': inv.flatNo || '',
+      'Agreement Value': Number(inv.agreementValue),
+      'Brokerage %': inv.brokeragePercent,
+      'Brokerage Amount': calculateBrokerage(inv),
+      'Executive Bonus': Number(inv.executiveBonus) || 0,
+      'Total Revenue': calculateTotal(inv)
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Invoices');
+    XLSX.writeFile(workbook, `PropEmpire_Invoices_${selectedMonth}.xlsx`);
   };
 
   const handleOpenPdf = async (invoice) => {
@@ -128,14 +153,19 @@ export default function Deals() {
     <div className="animate-fade-in" style={{ paddingBottom: '4rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1 style={{ margin: 0 }}>Deals & Bills</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--surface-color)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-color)' }}>
-          <Calendar size={18} color="var(--primary-blue)" />
-          <input 
-            type="month" 
-            value={selectedMonth} 
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            style={{ border: 'none', outline: 'none', background: 'transparent', fontWeight: 'bold', color: 'var(--text-main)', fontSize: '1rem' }}
-          />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'var(--surface-color)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-xl)', border: '1px solid var(--border-color)' }}>
+            <Calendar size={18} color="var(--primary-blue)" />
+            <input 
+              type="month" 
+              value={selectedMonth} 
+              onChange={(e) => setSelectedMonth(e.target.value)}
+              style={{ border: 'none', outline: 'none', background: 'transparent', fontWeight: 'bold', color: 'var(--text-main)', fontSize: '1rem' }}
+            />
+          </div>
+          <button className="btn btn-secondary" onClick={handleExportExcel} style={{ padding: '0.5rem 1rem' }}>
+            <FileText size={18} /> Export
+          </button>
         </div>
       </div>
 
@@ -143,9 +173,9 @@ export default function Deals() {
         <div style={{ background: 'rgba(255,255,255,0.2)', padding: '1rem', borderRadius: '50%' }}>
           <DollarSign size={32} />
         </div>
-        <div>
+        <div style={{ overflow: 'hidden' }}>
           <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-light)', opacity: 0.9 }}>Total Revenue ({new Date(selectedMonth + '-01').toLocaleString('default', { month: 'long', year: 'numeric' })})</p>
-          <h2 style={{ margin: 0, fontSize: '2rem', fontWeight: '800', color: 'white' }}>₹ {totalRevenue.toLocaleString('en-IN')}</h2>
+          <h2 style={{ margin: 0, fontSize: 'clamp(1.5rem, 6vw, 2.5rem)', fontWeight: '800', color: 'white', wordBreak: 'break-word' }}>₹ {Math.round(totalRevenue).toLocaleString('en-IN')}</h2>
         </div>
       </div>
 
@@ -219,15 +249,17 @@ export default function Deals() {
             </div>
           </div>
           
-          <div style={{ padding: '2rem 1rem', display: 'flex', justifyContent: 'center', flex: 1 }}>
+          <div style={{ padding: '1rem', display: 'flex', justifyContent: 'center', flex: 1, overflowY: 'auto' }}>
             <div style={{ width: '100%', maxWidth: '850px', overflowX: 'auto', backgroundColor: 'var(--surface-color)', padding: '1rem', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-md)' }}>
-              <div id="printable-invoice-modal" style={{ width: '794px', height: '1123px', boxSizing: 'border-box', backgroundColor: '#ffffff' }}>
-                <InvoicePreview 
-                  data={viewingInvoice} 
-                  profile={profile}
-                  brokerageAmount={calculateBrokerage(viewingInvoice)} 
-                  totalAmount={calculateTotal(viewingInvoice)} 
-                />
+              <div style={{ minWidth: '794px', display: 'flex', justifyContent: 'center' }}>
+                <div id="printable-invoice-modal" style={{ width: '794px', minWidth: '794px', height: '1123px', boxSizing: 'border-box', backgroundColor: '#ffffff', flexShrink: 0 }}>
+                  <InvoicePreview 
+                    data={viewingInvoice} 
+                    profile={profile}
+                    brokerageAmount={calculateBrokerage(viewingInvoice)} 
+                    totalAmount={calculateTotal(viewingInvoice)} 
+                  />
+                </div>
               </div>
             </div>
           </div>

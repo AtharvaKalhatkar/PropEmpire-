@@ -161,14 +161,16 @@ export default function CreateInvoice({ onNavigate }) {
           * Tip: Click "Save as PDF", then send it as an attachment via WhatsApp/Email.
         </p>
         
-        <div style={{ overflowX: 'auto', background: 'var(--surface-color)', padding: '2rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', justifyContent: 'center' }}>
-          <div id="printable-invoice" style={{ width: '794px', height: '1123px', boxSizing: 'border-box', backgroundColor: '#ffffff' }}>
-            <InvoicePreview 
-              data={formData} 
-              profile={profile}
-              brokerageAmount={calculateBrokerage()} 
-              totalAmount={calculateTotal()} 
-            />
+        <div style={{ overflowX: 'auto', background: 'var(--surface-color)', padding: '1rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ minWidth: '794px', display: 'flex', justifyContent: 'center' }}>
+            <div id="printable-invoice" style={{ width: '794px', minWidth: '794px', height: '1123px', boxSizing: 'border-box', backgroundColor: '#ffffff', flexShrink: 0 }}>
+              <InvoicePreview 
+                data={formData} 
+                profile={profile}
+                brokerageAmount={calculateBrokerage()} 
+                totalAmount={calculateTotal()} 
+              />
+            </div>
           </div>
         </div>
       </div>
