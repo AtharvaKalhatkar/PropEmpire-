@@ -1,80 +1,115 @@
-import localforage from 'localforage';
-import { v4 as uuidv4 } from 'uuid';
+import { createClient } from '@supabase/supabase-js';
 
-// Initialize stores
-const invoicesStore = localforage.createInstance({ name: 'PropEmpire', storeName: 'invoices' });
-const clientsStore = localforage.createInstance({ name: 'PropEmpire', storeName: 'clients' });
-const profileStore = localforage.createInstance({ name: 'PropEmpire', storeName: 'profile' });
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Default Profile
-const defaultProfile = {
-  agentName: 'Saurabh Shivaji Gade',
-  email: 'saurabhgade32@gmail.com',
-  mobile: '9730953309',
-  reraNo: 'A52100041995',
-  panNo: 'DDHPG6896K',
-  bankFavouringName: 'Saurabh Shivaji Gade',
-  bankName: 'HDFC Bank,S No, 648 Pune, Pune - Ahmednagar Hwy Near Lifeline Hospital, Wagholi, Pune, Maharashtra 412207',
-  accountType: 'Saving',
-  accountNo: '50100560608282',
-  ifscCode: 'HDFC0009332'
-};
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Profile API
-export const getProfile = async () => {
-  const profile = await profileStore.getItem('user_profile');
-  if (!profile) {
-    await profileStore.setItem('user_profile', defaultProfile);
-    return defaultProfile;
+// Maintain compatibility with App.jsx
+export async function initDB() {
+  return true;
+}
+
+export async function getProfile() {
+  const { data, error } = await supabase.from('profile').select('*').eq('id', 1).single();
+  if (error && error.code !== 'PGRST116') { // PGRST116 is 'Row not found'
+    console.error("Error fetching profile:", error);
+    return null;
   }
-  return profile;
-};
+  return data || null;
+}
 
-export const saveProfile = async (profile) => {
-  await profileStore.setItem('user_profile', profile);
-  return profile;
-};
-
-// Clients API
-export const getClients = async () => {
-  const clients = [];
-  await clientsStore.iterate((value) => {
-    clients.push(value);
-  });
-  return clients.sort((a, b) => b.createdAt - a.createdAt);
-};
-
-export const addClient = async (clientData) => {
-  const id = uuidv4();
-  const client = { ...clientData, id, createdAt: Date.now() };
-  await clientsStore.setItem(id, client);
-  return client;
-};
-
-export const updateClientStatus = async (id, status) => {
-  const client = await clientsStore.getItem(id);
-  if (client) {
-    client.status = status;
-    await clientsStore.setItem(id, client);
+export async function saveProfile(profileData) {
+  const { data, error } = await supabase
+    .from('profile')
+    .upsert({ id: 1, ...profileData })
+    .select()
+    .single();
+    
+  if (error) {
+    console.error("Error saving profile:", error);
+    throw error;
   }
-};
+  return data;
+}
 
-export const deleteClient = async (id) => {
-  await clientsStore.removeItem(id);
-};
+export async function getClients() {
+  const { data, error } = await supabase
+    .from('clients')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) {
+    console.error("Error fetching clients:", error);
+    return [];
+  }
+  return data || [];
+}
 
-// Invoices API
-export const getInvoices = async () => {
-  const invoices = [];
-  await invoicesStore.iterate((value) => {
-    invoices.push(value);
-  });
-  return invoices.sort((a, b) => b.createdAt - a.createdAt);
-};
+export async function saveClient(clientData) {
+  let response;
+  if (clientData.id) {
+    response = await supabase.from('clients').update({ ...clientData, updated_at: new Date().toISOString() }).eq('id', clientData.id).select().single();
+  } else {
+    response = await supabase.from('clients').insert([clientData]).select().single();
+  }
+  
+  if (response.error) {
+    console.error("Error saving client:", response.error);
+    throw response.error;
+  }
+  return response.data;
+}
 
-export const saveInvoice = async (invoiceData) => {
-  const id = uuidv4();
-  const invoice = { ...invoiceData, id, createdAt: Date.now() };
-  await invoicesStore.setItem(id, invoice);
-  return invoice;
-};
+// Aliases for compatibility with Clients.jsx
+export const addClient = saveClient;
+
+export async function updateClientStatus(id, status) {
+  const { error } = await supabase.from('clients').update({ status }).eq('id', id);
+  if (error) {
+    console.error("Error updating client status:", error);
+    throw error;
+  }
+  return true;
+}
+
+export async function deleteClient(id) {
+  const { error } = await supabase
+    .from('clients')
+    .delete()
+    .eq('id', id);
+    
+  if (error) {
+    console.error("Error deleting client:", error);
+    throw error;
+  }
+  return true;
+}
+
+export async function getInvoices() {
+  const { data, error } = await supabase
+    .from('invoices')
+    .select('*')
+    .order('created_at', { ascending: false });
+    
+  if (error) {
+    console.error("Error fetching invoices:", error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function saveInvoice(invoiceData) {
+  let response;
+  if (invoiceData.id) {
+    response = await supabase.from('invoices').update(invoiceData).eq('id', invoiceData.id).select().single();
+  } else {
+    response = await supabase.from('invoices').insert([invoiceData]).select().single();
+  }
+  
+  if (response.error) {
+    console.error("Error saving invoice:", response.error);
+    throw response.error;
+  }
+  return response.data;
+}
