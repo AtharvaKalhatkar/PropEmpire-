@@ -176,8 +176,6 @@ p { margin-bottom: 1rem; color: var(--text-muted); }
 /* Layout */
 body {
   background-color: #e2e8f0; /* Darker background outside the app */
-  display: flex;
-  justify-content: center;
 }
 
 .dark-theme body {
