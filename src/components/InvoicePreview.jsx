@@ -26,7 +26,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
   return (
     <div style={{
       width: '100%',
-      height: '100%',
+      height: 'auto',
       backgroundColor: '#fff',
       fontFamily: 'Arial, Helvetica, sans-serif',
       color: '#000',
@@ -39,7 +39,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
       <div style={{
         border: '1.5px solid #000',
         width: '100%',
-        height: '100%',
+        height: 'auto',
         boxSizing: 'border-box',
         position: 'relative',
         display: 'flex',
@@ -163,7 +163,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
                   {data.brokeragePercent} %
                 </td>
                 <td style={{ padding: 0, verticalAlign: 'top' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '200px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '280px' }}>
                     <div style={{ flex: 1, textAlign: 'right', fontWeight: 'bold', fontSize: '14px', padding: '15px 10px' }}>
                       {brokerageAmount.toLocaleString('en-IN')} /-
                     </div>
@@ -188,14 +188,6 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
                   </td>
                 </tr>
               )}
-
-              {/* Empty Space Row to push things down slightly and keep vertical lines */}
-              <tr>
-                <td style={{ borderRight: '1.5px solid #000', padding: '30px' }}></td>
-                <td style={{ borderRight: '1.5px solid #000' }}></td>
-                <td style={{ borderRight: '1.5px solid #000' }}></td>
-                <td></td>
-              </tr>
 
               {/* Total Row */}
               <tr style={{ borderBottom: '1.5px solid #000', borderTop: '1.5px solid #000' }}>
