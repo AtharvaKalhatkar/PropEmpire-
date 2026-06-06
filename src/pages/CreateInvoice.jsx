@@ -199,7 +199,7 @@ export default function CreateInvoice({ onNavigate }) {
         
         <div style={{ overflowX: 'auto', background: 'var(--surface-color)', padding: '1rem', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-md)', display: 'flex', justifyContent: 'center' }}>
           <div style={{ minWidth: '794px', display: 'flex', justifyContent: 'center' }}>
-            <div id="printable-invoice" style={{ width: '794px', minWidth: '794px', height: '1123px', boxSizing: 'border-box', backgroundColor: '#ffffff', flexShrink: 0 }}>
+            <div id="printable-invoice" style={{ width: '794px', minWidth: '794px', boxSizing: 'border-box', backgroundColor: '#ffffff', flexShrink: 0 }}>
               <InvoicePreview 
                 data={formData} 
                 profile={profile}

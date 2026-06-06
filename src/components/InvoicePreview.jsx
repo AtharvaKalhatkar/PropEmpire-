@@ -144,7 +144,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
             </thead>
             <tbody>
               {/* Row 1 */}
-              <tr style={{ borderBottom: '1.5px solid #000' }}>
+              <tr>
                 <td style={{ borderRight: '1.5px solid #000', textAlign: 'center', verticalAlign: 'top', padding: '15px 8px' }}>1.</td>
                 <td style={{ borderRight: '1.5px solid #000', padding: '15px 15px', verticalAlign: 'top' }}>
                   <div style={{ fontWeight: 'bold', fontSize: '14px', marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -177,20 +177,28 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
 
               {/* Row 2: Bonus */}
               {Number(data.executiveBonus) > 0 && (
-                <tr style={{ borderBottom: '1.5px solid #000' }}>
-                  <td style={{ borderRight: '1.5px solid #000', textAlign: 'center', padding: '10px 8px' }}>2.</td>
-                  <td style={{ borderRight: '1.5px solid #000', padding: '10px 15px', fontWeight: 'bold', display: 'flex', gap: '30px' }}>
+                <tr>
+                  <td style={{ borderRight: '1.5px solid #000', textAlign: 'center', padding: '10px 8px', verticalAlign: 'top' }}>2.</td>
+                  <td style={{ borderRight: '1.5px solid #000', padding: '10px 15px', fontWeight: 'bold', display: 'flex', gap: '30px', verticalAlign: 'top' }}>
                     <span>Executive Bonus</span> <span>:-</span> <span>{Number(data.executiveBonus).toLocaleString('en-IN')} /-</span>
                   </td>
                   <td style={{ borderRight: '1.5px solid #000' }}></td>
-                  <td style={{ textAlign: 'right', fontWeight: 'bold', fontSize: '14px', padding: '10px 10px' }}>
+                  <td style={{ textAlign: 'right', fontWeight: 'bold', fontSize: '14px', padding: '10px 10px', verticalAlign: 'top' }}>
                     {Number(data.executiveBonus).toLocaleString('en-IN')} /-
                   </td>
                 </tr>
               )}
 
+              {/* Empty Space Row to push things down slightly and keep vertical lines */}
+              <tr>
+                <td style={{ borderRight: '1.5px solid #000', padding: '30px' }}></td>
+                <td style={{ borderRight: '1.5px solid #000' }}></td>
+                <td style={{ borderRight: '1.5px solid #000' }}></td>
+                <td></td>
+              </tr>
+
               {/* Total Row */}
-              <tr style={{ borderBottom: '1.5px solid #000' }}>
+              <tr style={{ borderBottom: '1.5px solid #000', borderTop: '1.5px solid #000' }}>
                 <td colSpan="2" style={{ borderRight: '1.5px solid #000', textAlign: 'center', fontWeight: 'bold', fontSize: '16px', padding: '8px' }}>Total</td>
                 <td style={{ borderRight: '1.5px solid #000' }}></td>
                 <td style={{ textAlign: 'right', fontWeight: 'bold', fontSize: '16px', padding: '8px 10px' }}>
@@ -208,7 +216,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
           </table>
 
           {/* 7. FOOTER */}
-          <div style={{ borderTop: '1.5px solid #000', padding: '15px 20px', display: 'flex', justifyContent: 'space-between', flex: 1 }}>
+          <div style={{ borderTop: '1.5px solid #000', padding: '15px 20px', display: 'flex', justifyContent: 'space-between' }}>
             {/* Left Box */}
             <div style={{ flex: 1, fontSize: '11px', lineHeight: '1.6' }}>
               <div style={{ fontWeight: 'bold', fontSize: '12px', marginBottom: '2px' }}>
