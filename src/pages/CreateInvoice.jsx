@@ -9,8 +9,9 @@ export default function CreateInvoice({ onNavigate, editingInvoice, setEditingIn
   const [profile, setProfile] = useState(null);
   const [showActionModal, setShowActionModal] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const currentYearPrefix = new Date().getFullYear().toString().slice(-2);
   const [formData, setFormData] = useState({
-    invoiceNo: '1',
+    invoiceNo: `${currentYearPrefix}001`,
     date: new Date().toISOString().split('T')[0],
     billedToName: '',
     billedToAddress: '',
@@ -46,8 +47,9 @@ export default function CreateInvoice({ onNavigate, editingInvoice, setEditingIn
     });
     getInvoices().then(invoices => {
       // Auto-increment invoice number based on existing ONLY if not editing
-      if (invoices.length > 0 && !editingInvoice) {
-        setFormData(prev => ({ ...prev, invoiceNo: (invoices.length + 1).toString() }));
+      if (!editingInvoice) {
+        const nextNumber = String(invoices.length + 1).padStart(3, '0');
+        setFormData(prev => ({ ...prev, invoiceNo: `${currentYearPrefix}${nextNumber}` }));
       }
     }).catch(() => {});
   }, [editingInvoice]);
