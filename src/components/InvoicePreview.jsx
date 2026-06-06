@@ -20,11 +20,15 @@ const numberToWords = (num) => {
   return inWords(Math.round(num));
 };
 
-// Shared border style for all table cells
 const CELL = { border: '1.5px solid #000', padding: '8px 10px', verticalAlign: 'top' };
 
 export default function InvoicePreview({ data, profile, brokerageAmount, totalAmount }) {
   const displayLogo = profile?.logoImage || logoImg;
+
+  // Smart bank address — avoid duplicating if bankName already contains the second line
+  const bankName = profile?.bankName || 'HDFC Bank,S No, 648 Pune, Pune - Ahmednagar Hwy';
+  const bankAddress = profile?.bankAddress || 'Near Lifeline Hospital, Wagholi, Pune, Maharashtra 412207';
+  const showBankAddress = !bankName.toLowerCase().includes(bankAddress.substring(0, 15).toLowerCase());
 
   return (
     <div style={{
@@ -51,7 +55,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
 
         {/* WATERMARK */}
         <div style={{
-          position: 'absolute', top: '50%', left: '50%',
+          position: 'absolute', top: '65%', left: '50%',
           transform: 'translate(-50%, -50%)',
           opacity: 0.08, pointerEvents: 'none', zIndex: 0,
           width: '500px', height: '500px',
@@ -63,8 +67,8 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
 
           {/* ── 1. HEADER ── */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 20px' }}>
-            <img src={displayLogo} alt="Logo" style={{ maxHeight: '100px', maxWidth: '200px', objectFit: 'contain' }} />
-            <div style={{ textAlign: 'right' }}>
+            <img src={displayLogo} alt="Logo" style={{ maxHeight: '130px', maxWidth: '250px', objectFit: 'contain' }} />
+            <div style={{ flex: 1, textAlign: 'center' }}>
               <div style={{ fontSize: '28px', fontWeight: '900', color: '#004b73', marginBottom: '6px', letterSpacing: '0.5px' }}>
                 {profile?.agentName || 'SAURABH SHIVAJI GADE'}
               </div>
@@ -141,13 +145,12 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
           </div>
 
           {/* ── 6. MAIN TABLE ── */}
-          {/* FIX: marginTop: '20px' adds the white space gap matching the reference image */}
           <table style={{
             width: '100%',
             borderCollapse: 'collapse',
             tableLayout: 'fixed',
             fontSize: '13px',
-            marginTop: '20px',      // ← gap between CP section and table
+            marginTop: '20px',
           }}>
             <colgroup>
               <col style={{ width: '60px' }} />
@@ -166,7 +169,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
             </thead>
 
             <tbody>
-              {/* ── ROW 1: Main service ── */}
+              {/* ── ROW 1 ── */}
               <tr>
                 <td style={{ ...CELL, textAlign: 'center', paddingTop: '15px', fontSize: '12px' }}>1.</td>
                 <td style={{ ...CELL, padding: '15px' }}>
@@ -237,10 +240,17 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
           </table>
 
           {/* ── 7. FOOTER ── */}
-          <div style={{ padding: '15px 20px', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{
+            padding: '15px 20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',       // align children to bottom
+            gap: '12px',
+          }}>
 
             {/* Left: Bank details */}
-            <div style={{ flex: 1, fontSize: '11px', lineHeight: '1.7' }}>
+            {/* FIX: minWidth:0 prevents this flex child from overflowing into the signature column */}
+            <div style={{ flex: 1, minWidth: 0, fontSize: '11px', lineHeight: '1.7' }}>
               <div style={{ fontWeight: 'bold', fontSize: '12px', marginBottom: '2px' }}>
                 Channel Partner Cheque favouring Name : {profile?.bankFavouringName || 'Saurabh Shivaji Gade'}
               </div>
@@ -250,15 +260,18 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
               <div style={{ fontWeight: 'bold', fontSize: '12px', textDecoration: 'underline', marginBottom: '4px' }}>
                 For NEFT / RTGS - Bank A/C details.........
               </div>
-              <div style={{ fontSize: '10px', color: '#444', marginBottom: '8px', lineHeight: '1.5' }}>
-                Bank Name & Address :- {profile?.bankName || 'HDFC Bank, S No, 648 Pune, Pune - Ahmednagar Hwy'}
-                {profile?.bankAddress && (
+
+              {/* FIX: wordBreak ensures long address stays inside its column */}
+              <div style={{ fontSize: '10px', color: '#444', marginBottom: '8px', lineHeight: '1.5', wordBreak: 'break-word' }}>
+                Bank Name & Address :- {bankName}
+                {showBankAddress && (
                   <><br />
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {profile.bankAddress}
+                    {bankAddress}
                   </>
                 )}
               </div>
+
               <div style={{ display: 'grid', gridTemplateColumns: '120px 10px auto', fontWeight: 'bold', fontSize: '11px', rowGap: '2px' }}>
                 <div>Account Type</div><div>:</div><div>{profile?.accountType || 'Saving'}</div>
                 <div>Account No</div><div>:</div><div>{profile?.accountNo || '50100560608282'}</div>
@@ -266,14 +279,17 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
               </div>
             </div>
 
-            {/* Right: Signature */}
+            {/* Right: Signature — fixed width, anchored to bottom */}
             <div style={{
+              flexShrink: 0,
               width: '200px',
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'flex-end',
-              paddingBottom: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              paddingBottom: '4px',
             }}>
-              <div style={{ fontSize: '10px', fontWeight: 'bold', fontStyle: 'italic', textAlign: 'center', marginBottom: '40px' }}>
+              <div style={{ fontSize: '10px', fontWeight: 'bold', fontStyle: 'italic', marginBottom: '40px' }}>
                 (Stamp and signature of channel partner)
               </div>
               <div style={{ fontWeight: 'bold', fontSize: '13px' }}>Authorised Signatory</div>
