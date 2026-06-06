@@ -38,6 +38,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
       margin: '0 auto',
       position: 'relative',
     }}>
+
       {/* ── OUTER BORDER ── */}
       <div style={{
         border: '1.5px solid #000',
@@ -140,8 +141,14 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
           </div>
 
           {/* ── 6. MAIN TABLE ── */}
-          {/* FIX 1: every cell uses full border via CELL constant */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed', fontSize: '13px' }}>
+          {/* FIX: marginTop: '20px' adds the white space gap matching the reference image */}
+          <table style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            tableLayout: 'fixed',
+            fontSize: '13px',
+            marginTop: '20px',      // ← gap between CP section and table
+          }}>
             <colgroup>
               <col style={{ width: '60px' }} />
               <col />
@@ -178,7 +185,6 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
                 <td style={{ ...CELL, textAlign: 'center', verticalAlign: 'middle', fontWeight: 'bold', fontSize: '14px' }}>
                   {data.brokeragePercent} %
                 </td>
-                {/* Amount cell with internal sub-line at bottom */}
                 <td style={{ ...CELL, padding: 0 }}>
                   <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '220px' }}>
                     <div style={{ flex: 1, textAlign: 'right', fontWeight: 'bold', fontSize: '14px', padding: '15px 10px 0 0' }}>
@@ -192,7 +198,6 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
               </tr>
 
               {/* ── ROW 2: Executive Bonus (conditional) ── */}
-              {/* FIX 2: removed display:flex from td; plain div inside instead */}
               {Number(data.executiveBonus) > 0 && (
                 <tr>
                   <td style={{ ...CELL, textAlign: 'center', fontSize: '12px', paddingTop: '10px' }}>2.</td>
@@ -211,7 +216,6 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
               )}
 
               {/* ── TOTAL ROW ── */}
-              {/* FIX 3: Sr.No cell empty, Total only in Particulars col — no colSpan */}
               <tr>
                 <td style={{ ...CELL, borderRight: 'none' }}></td>
                 <td style={{ ...CELL, borderLeft: 'none', borderRight: 'none', textAlign: 'center', fontWeight: 'bold', fontSize: '16px' }}>
@@ -233,8 +237,8 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
           </table>
 
           {/* ── 7. FOOTER ── */}
-          {/* FIX 4: removed borderTop — table already provides the bottom border */}
           <div style={{ padding: '15px 20px', display: 'flex', justifyContent: 'space-between' }}>
+
             {/* Left: Bank details */}
             <div style={{ flex: 1, fontSize: '11px', lineHeight: '1.7' }}>
               <div style={{ fontWeight: 'bold', fontSize: '12px', marginBottom: '2px' }}>
@@ -247,9 +251,13 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
                 For NEFT / RTGS - Bank A/C details.........
               </div>
               <div style={{ fontSize: '10px', color: '#444', marginBottom: '8px', lineHeight: '1.5' }}>
-                Bank Name & Address :- {profile?.bankName || 'HDFC Bank, S No, 648 Pune, Pune - Ahmednagar Hwy'}<br />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                {profile?.bankAddress || 'Near Lifeline Hospital, Wagholi, Pune, Maharashtra 412207'}
+                Bank Name & Address :- {profile?.bankName || 'HDFC Bank, S No, 648 Pune, Pune - Ahmednagar Hwy'}
+                {profile?.bankAddress && (
+                  <><br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {profile.bankAddress}
+                  </>
+                )}
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '120px 10px auto', fontWeight: 'bold', fontSize: '11px', rowGap: '2px' }}>
                 <div>Account Type</div><div>:</div><div>{profile?.accountType || 'Saving'}</div>
@@ -270,6 +278,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
               </div>
               <div style={{ fontWeight: 'bold', fontSize: '13px' }}>Authorised Signatory</div>
             </div>
+
           </div>
 
         </div>
