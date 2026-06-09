@@ -150,9 +150,9 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
             ══════════════════════════════ */}
             <div style={{ display: 'flex', alignItems: 'stretch', borderBottom: BD }}>
 
-              {/* Logo — BLACK background (matches Canva exactly) */}
+              {/* Logo — WHITE background (matches Canva exactly) */}
               <div style={{
-                backgroundColor: '#000',
+                backgroundColor: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '14px',
                 width: '190px', flexShrink: 0,
@@ -238,9 +238,8 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
 
             {/* ══════════════════════════════
                 5. CHANNEL PARTNER DETAILS
-                (light gray background — matches Canva)
             ══════════════════════════════ */}
-            <div style={{ display: 'flex', borderBottom: BD, backgroundColor: '#eef3f5', fontSize: '10px' }}>
+            <div style={{ display: 'flex', borderBottom: BD, backgroundColor: '#fff', fontSize: '10px' }}>
 
               {/* Left — bullet list + italic notes */}
               <div style={{ flex: 1.5, padding: '8px 14px', borderRight: BD, lineHeight: '1.75' }}>
@@ -321,11 +320,11 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
                     </div>
                   </td>
 
-                  {/* Tax Rate — vertically aligned to BOTTOM (matches Canva) */}
+                  {/* Tax Rate — vertically aligned to MIDDLE (matches Canva) */}
                   <td style={{
                     ...CELL,
                     textAlign: 'center',
-                    verticalAlign: 'bottom',
+                    verticalAlign: 'middle',
                     fontWeight: 'bold',
                     fontSize: '14px',
                     paddingBottom: '12px',
@@ -338,8 +337,9 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: '200px' }}>
                       <div style={{
                         flex: 1,
+                        display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
                         textAlign: 'right', fontWeight: 'bold', fontSize: '14px',
-                        padding: '14px 10px 0 0',
+                        padding: '14px 10px 8px 0',
                       }}>
                         {fmtIN(brokerageAmount)} /-
                       </div>
@@ -370,14 +370,14 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
 
                 {/* ── Total row ── */}
                 <tr>
-                  <td style={{ ...CELL, borderRight: 'none' }}></td>
+                  <td style={CELL}></td>
                   <td style={{
-                    ...CELL, borderLeft: 'none', borderRight: 'none',
+                    ...CELL,
                     textAlign: 'center', fontWeight: '900', fontSize: '17px',
                   }}>
                     Total
                   </td>
-                  <td style={{ ...CELL, borderLeft: 'none', borderRight: 'none' }}></td>
+                  <td style={CELL}></td>
                   <td style={{ ...CELL, textAlign: 'right', fontWeight: '900', fontSize: '17px' }}>
                     {fmtIN(totalAmount)}/-
                   </td>
@@ -411,15 +411,16 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
               {/* Left — Bank details */}
               <div style={{ flex: 1, minWidth: 0, fontSize: '11px', lineHeight: '1.8' }}>
 
-                <div style={{ marginBottom: '1px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '270px 10px auto', marginBottom: '1px' }}>
                   <strong>Channel Partner Cheque favouring Name</strong>
-                  &nbsp;: {profile?.bankFavouringName || 'Saurabh Shivaji Gade'}
+                  <span>:</span>
+                  <span>{profile?.bankFavouringName || 'Saurabh Shivaji Gade'}</span>
                 </div>
 
-                <div style={{ marginBottom: '8px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '270px 10px auto', marginBottom: '8px' }}>
                   <strong>As Per RERA Certificate Name</strong>
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                  : {profile?.agentName || 'Saurabh Shivaji Gade'}
+                  <span>:</span>
+                  <span>{profile?.agentName || 'Saurabh Shivaji Gade'}</span>
                 </div>
 
                 <div style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '5px' }}>
