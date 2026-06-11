@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, UserPlus, Phone, Trash2, Calendar, FileText, ChevronDown, ChevronUp, Search, MessageCircle } from 'lucide-react';
-import * as XLSX from 'xlsx';
 import { getClients, addClient, deleteClient, updateClientStatus } from '../db';
+import { exportRowsToXlsx } from '../utils/spreadsheet';
 
 export default function Clients() {
   const [clients, setClients] = useState([]);
@@ -40,10 +40,7 @@ export default function Clients() {
       'Next Follow-up Date': client.nextFollowUp ? new Date(client.nextFollowUp).toLocaleDateString('en-GB') : '',
       'Notes / History': client.notes || ''
     }));
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Clients List');
-    XLSX.writeFile(workbook, 'PropEmpire_Clients.xlsx');
+    exportRowsToXlsx({ rows: exportData, sheetName: 'Clients List', fileName: 'PropEmpire_Clients.xlsx' });
   };
 
   useEffect(() => {

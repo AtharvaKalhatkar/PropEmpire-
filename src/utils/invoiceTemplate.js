@@ -11,16 +11,19 @@ export const POSITIONS = {
   billedToName: { x: 95, y: 190 },
   gstin: { x: 105, y: 230 },
 
-  customerName: { x: 230, y: 390 },
-  projectName: { x: 230, y: 403 },
-  towerName: { x: 230, y: 416 },
-  flatNo: { x: 230, y: 428 },
+  customerName: { x: 250, y: 390 },
+  projectName: { x: 250, y: 403 },
+  towerName: { x: 250, y: 416 },
+  flatNo: { x: 250, y: 428 },
+  agreementValue: { x: 250, y: 441 },
+  brokerageNumber: { x: 250, y: 454 },
+  executiveBonusParticular: { x: 445, y: 525 },
 
   taxRate: { x: 400, y: 472 },
 
-  brokerageAmount: { x: 460, y: 430 },
+  brokerageAmount: { x: 460, y: 455 },
   subtotalAmount: { x: 460, y: 472 },
-  executiveBonus: { x: 230, y: 500 },
+  executiveBonus: { x: 250, y: 500 },
   totalAmount: { x: 440, y: 550 },
   amountInWords: { x: 200, y: 574 },
 
@@ -78,6 +81,9 @@ const buildPdfTextFields = (data, profile, brokerageAmount, totalAmount, executi
   projectName: data.projectName || '',
   towerName: data.tower || '',
   flatNo: data.flatNo || '',
+  agreementValue: data.agreementValue ? `${formatINR(data.agreementValue)} /-` : '',
+  brokerageNumber: data.brokeragePercent != null && data.brokeragePercent !== '' ? `${data.brokeragePercent} %` : '',
+  executiveBonusParticular: executiveBonus > 0 ? `${formatINR(executiveBonus)} /-` : '',
   taxRate: data.brokeragePercent != null && data.brokeragePercent !== '' ? `${data.brokeragePercent} %` : '',
   brokerageAmount: `${formatINR(brokerageAmount)} /-`,
   subtotalAmount: `${formatINR(brokerageAmount)} /-`,
@@ -138,6 +144,9 @@ export const generateInvoicePdfBlob = async ({ data = {}, profile = {}, brokerag
   drawField('projectName', { fontSize: 10, bold: false, maxWidth: 220 });
   drawField('towerName', { fontSize: 9, bold: false, maxWidth: 220 });
   drawField('flatNo', { fontSize: 9, bold: false, maxWidth: 220 });
+  drawField('agreementValue', { fontSize: 9, bold: false, maxWidth: 220 });
+  drawField('brokerageNumber', { fontSize: 9, bold: false, maxWidth: 220 });
+  drawField('executiveBonusParticular', { fontSize: 12, bold: true, maxWidth: 220 });
   drawField('taxRate', { fontSize: 10, bold: true, maxWidth: 90 });
   drawField('brokerageAmount', { fontSize: 10, bold: true, maxWidth: 120 });
   drawField('subtotalAmount', { fontSize: 10, bold: true, maxWidth: 120 });

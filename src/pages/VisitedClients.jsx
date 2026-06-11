@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { MapPin, UserPlus, Phone, Trash2, Calendar, FileText, ChevronDown, ChevronUp, Search, MessageCircle, CheckSquare, Square, Filter, X } from 'lucide-react';
-import * as XLSX from 'xlsx';
 import { getVisitedClients, saveVisitedClient, deleteVisitedClient } from '../db';
+import { exportRowsToCsv, exportRowsToXlsx } from '../utils/spreadsheet';
 
 export default function VisitedClients() {
   const [clients, setClients] = useState([]);
@@ -62,11 +62,8 @@ export default function VisitedClients() {
         'Notes': client.notes || ''
       };
     });
-    
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Visited Clients');
-    XLSX.writeFile(workbook, 'PropEmpire_Visited_Clients.xlsx');
+
+    exportRowsToXlsx({ rows: exportData, sheetName: 'Visited Clients', fileName: 'PropEmpire_Visited_Clients.xlsx' });
   };
 
   const handleExportCSV = () => {
@@ -99,18 +96,8 @@ export default function VisitedClients() {
         'Notes': client.notes || ''
       };
     });
-    
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const csv = XLSX.utils.sheet_to_csv(worksheet);
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", "PropEmpire_Visited_Clients.csv");
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    exportRowsToCsv({ rows: exportData, fileName: 'PropEmpire_Visited_Clients.csv' });
   };
 
   useEffect(() => {

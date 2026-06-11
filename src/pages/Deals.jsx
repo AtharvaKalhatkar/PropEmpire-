@@ -3,8 +3,8 @@ import { FileText, Download, Calendar, DollarSign, Eye, X, Printer, MessageCircl
 import { getInvoices, getProfile, deleteInvoice } from '../db';
 import { generateInvoicePdfBlob } from '../utils/invoiceTemplate';
 import { downloadPdfBlob } from '../utils/pdf';
-import * as XLSX from 'xlsx';
 import { Edit2 } from 'lucide-react';
+import { exportRowsToXlsx } from '../utils/spreadsheet';
 
 export default function Deals({ onEditInvoice }) {
   const [invoices, setInvoices] = useState([]);
@@ -89,10 +89,7 @@ export default function Deals({ onEditInvoice }) {
       'Executive Bonus': Number(inv.executiveBonus) || 0,
       'Total Revenue': calculateTotal(inv)
     }));
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Invoices');
-    XLSX.writeFile(workbook, `PropEmpire_Invoices_${selectedMonth}.xlsx`);
+    exportRowsToXlsx({ rows: exportData, sheetName: 'Invoices', fileName: `PropEmpire_Invoices_${selectedMonth}.xlsx` });
   };
 
   const handleOpenPdf = async (invoice) => {
