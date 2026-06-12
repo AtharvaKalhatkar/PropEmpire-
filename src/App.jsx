@@ -107,17 +107,9 @@ function App() {
           <FileText />
           <span>Invoice</span>
         </a>
-        <a href="#visited" className={`nav-item ${activeTab === 'visited' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleTabChange('visited'); }}>
-          <MapPin />
-          <span>Visits</span>
-        </a>
         <a href="#clients" className={`nav-item ${activeTab === 'clients' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleTabChange('clients'); }}>
           <Users />
           <span>Clients</span>
-        </a>
-        <a href="#cards" className={`nav-item ${activeTab === 'cards' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); handleTabChange('cards'); }}>
-          <Image />
-          <span>Cards</span>
         </a>
       </nav>
     </div>

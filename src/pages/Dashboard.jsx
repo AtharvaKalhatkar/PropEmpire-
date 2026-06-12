@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, TrendingUp, Users, MapPin, DollarSign } from 'lucide-react';
+import { PlusCircle, TrendingUp, Users, MapPin, DollarSign, Image } from 'lucide-react';
 import { getInvoices, getClients } from '../db';
 
 export default function Dashboard({ onNavigate }) {
@@ -57,7 +57,7 @@ export default function Dashboard({ onNavigate }) {
       {/* Quick Actions */}
       <div>
         <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Quick Actions</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
           <button 
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}
             onClick={() => onNavigate('invoice')}
@@ -86,6 +86,16 @@ export default function Dashboard({ onNavigate }) {
               <Users size={28} />
             </div>
             <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-main)' }}>Clients</span>
+          </button>
+          
+          <button 
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}
+            onClick={() => onNavigate('cards')}
+          >
+            <div style={{ width: '56px', height: '56px', borderRadius: '1rem', backgroundColor: '#fff7ed', color: '#ea580c', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-sm)' }}>
+              <Image size={28} />
+            </div>
+            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-main)' }}>Cards</span>
           </button>
         </div>
       </div>
