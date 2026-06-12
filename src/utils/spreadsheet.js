@@ -112,3 +112,54 @@ export const exportRowsToCsv = ({ rows, fileName }) => {
   const blob = new Blob([csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
   downloadBlob(blob, fileName);
 };
+
+export const parseImportedXlsx = async (file) => {
+  const buffer = await file.arrayBuffer();
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buffer);
+  
+  const worksheet = workbook.worksheets[0];
+  if (!worksheet) throw new Error("No worksheet found.");
+
+  const data = [];
+  let headerRowIndex = -1;
+  let headers = [];
+
+  worksheet.eachRow((row, rowNumber) => {
+    // exceljs row.values is 1-indexed array
+    const rowValues = row.values.slice(1);
+    
+    // Attempt to find headers automatically: look for row with 'Name' or 'Phone' or 'Email'
+    if (headerRowIndex === -1) {
+      const textValues = rowValues.map(v => (v ? v.toString().toLowerCase().trim() : ''));
+      if (textValues.some(v => v.includes('name') || v.includes('phone') || v.includes('email') || v.includes('mobile') || v.includes('client'))) {
+        headerRowIndex = rowNumber;
+        headers = textValues;
+        return;
+      }
+    }
+
+    if (headerRowIndex !== -1 && rowNumber > headerRowIndex) {
+      const rowData = {};
+      headers.forEach((header, index) => {
+        if (!header) return;
+        const cell = row.getCell(index + 1);
+        let value = cell.value;
+        // Extract text if it's rich text or hyperlink
+        if (value && typeof value === 'object') {
+           if (value.richText) value = value.richText.map(rt => rt.text).join('');
+           else if (value.text) value = value.text;
+           else if (value.hyperlink) value = value.hyperlink;
+        }
+        rowData[header] = value;
+      });
+      
+      // Only push if there's actual data
+      if (Object.values(rowData).some(v => v != null && v !== '')) {
+        data.push(rowData);
+      }
+    }
+  });
+
+  return { headers, data };
+};

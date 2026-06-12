@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Users, UserPlus, Phone, Trash2, Calendar, FileText, ChevronDown, ChevronUp, Search, MessageCircle, Send, Radio, CheckSquare, Square, X } from 'lucide-react';
+import { Users, UserPlus, Phone, Trash2, Calendar, FileText, ChevronDown, ChevronUp, Search, MessageCircle, Send, Radio, CheckSquare, Square, X, FileUp } from 'lucide-react';
 import { getClients, addClient, deleteClient, updateClientStatus } from '../db';
-import { exportRowsToXlsx } from '../utils/spreadsheet';
+import { exportRowsToXlsx, parseImportedXlsx } from '../utils/spreadsheet';
 
 export default function Clients() {
   const [clients, setClients] = useState([]);
@@ -72,6 +72,57 @@ export default function Clients() {
   useEffect(() => {
     loadClients();
   }, []);
+
+  const handleImportExcel = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const { data } = await parseImportedXlsx(file);
+      if (!data || data.length === 0) {
+        alert("No valid data found in the file.");
+        return;
+      }
+
+      let importedCount = 0;
+      for (const row of data) {
+        // Map common header variations to our schema
+        const getVal = (keywords) => {
+          for (const key of Object.keys(row)) {
+             if (keywords.some(k => key.toLowerCase().includes(k))) return row[key] ? row[key].toString() : '';
+          }
+          return '';
+        };
+
+        const name = getVal(['name', 'client', 'customer']);
+        if (!name) continue; // Name is required
+
+        const newLead = {
+          name,
+          phone: getVal(['phone', 'mobile', 'contact', 'number']),
+          email: getVal(['email', 'mail']),
+          project: getVal(['project', 'interested', 'property']),
+          status: 'Lead',
+          budget: getVal(['budget', 'price', 'amount']),
+          propertyType: getVal(['type', 'config', 'bhk']),
+          leadSource: getVal(['source', 'campaign', 'origin']) || 'Imported Excel',
+          nextFollowUp: '',
+          notes: getVal(['note', 'remark', 'comment'])
+        };
+
+        await addClient(newLead);
+        importedCount++;
+      }
+
+      alert(`Successfully imported ${importedCount} clients!`);
+      loadClients();
+    } catch (err) {
+      console.error("Import error:", err);
+      alert("Failed to import Excel file. Please ensure it is a valid .xlsx file.");
+    }
+    // reset file input
+    e.target.value = '';
+  };
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -186,6 +237,10 @@ export default function Clients() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <h1 style={{ margin: 0 }}>Clients & Leads</h1>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <input type="file" accept=".xlsx" onChange={handleImportExcel} style={{ display: 'none' }} id="import-excel" />
+          <label htmlFor="import-excel" className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+            <FileUp size={16} /> Import Leads
+          </label>
           <button className="btn btn-secondary" onClick={handleExportExcel} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <FileText size={16} /> Export
           </button>
