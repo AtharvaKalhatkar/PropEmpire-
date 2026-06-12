@@ -257,7 +257,7 @@ export default function App() {
   return (
     <div className="app-wrapper">
       {/* ── NAVBAR ── */}
-      <nav className="navbar scrolled">
+      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
         <a href="#" className="nav-brand">
           <img src={logoImg} alt="PropEmpire Logo" className="nav-logo" />
         </a>
@@ -266,6 +266,8 @@ export default function App() {
           <a href="#projects" className="nav-link">Residences</a>
           <a href="#expertise" className="nav-link">Expertise</a>
           <a href="#contact" className="nav-link">Contact</a>
+        </div>
+        <div className="nav-actions">
           <button className="nav-btn" onClick={() => window.location.href = 'https://AtharvaKalhatkar.github.io/PropEmpire-/'}>
             Agent Portal
           </button>
