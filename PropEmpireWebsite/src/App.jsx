@@ -283,12 +283,12 @@ export default function App() {
             <span style={{ animationDelay: '0.2s' }}>PROP</span><span style={{ animationDelay: '0.4s', color: 'var(--accent)' }}>EMPIRE</span>
           </h1>
           <h2 className="hero-subtitle" style={{ animationDelay: '0.6s' }}>Authorized Real Estate Channel Partner</h2>
-          <h3 className="hero-title" style={{ fontSize: '2.5rem', marginTop: '20px' }}>
-            <span style={{ animationDelay: '0.8s' }}>Guiding </span> 
-            <span style={{ animationDelay: '1.0s' }}>You </span> 
-            <span style={{ animationDelay: '1.2s' }}>To </span> 
-            <span style={{ animationDelay: '1.4s' }}>Your </span> 
-            <span style={{ animationDelay: '1.6s' }}>Dream </span> 
+          <h3 className="hero-title">
+            <span style={{ animationDelay: '0.8s' }}>Guiding</span>{' '}
+            <span style={{ animationDelay: '1.0s' }}>You</span>{' '}
+            <span style={{ animationDelay: '1.2s' }}>To</span>{' '}
+            <span style={{ animationDelay: '1.4s' }}>Your</span>{' '}
+            <span style={{ animationDelay: '1.6s' }}>Dream</span>{' '}
             <span style={{ animationDelay: '1.8s' }}>Home</span>
           </h3>
           
