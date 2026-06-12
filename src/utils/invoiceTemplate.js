@@ -1,8 +1,12 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, rgb } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
 
 export const BASE_WIDTH = 904;
 export const BASE_HEIGHT = 1280;
 export const invoiceTemplatePdfSrc = new URL('../../Invoice.pdf', import.meta.url).href;
+
+const POPPINS_REGULAR_SRC = `${import.meta.env.BASE_URL}fonts/Poppins-Regular.ttf`;
+const POPPINS_SEMIBOLD_SRC = `${import.meta.env.BASE_URL}fonts/Poppins-SemiBold.ttf`;
 
 export const POSITIONS = {
   invoiceNo: { x: 130, y: 170 },
@@ -105,6 +109,7 @@ export const generateInvoicePdfBlob = async ({ data = {}, profile = {}, brokerag
 
   const templateBytes = await response.arrayBuffer();
   const pdfDoc = await PDFDocument.load(templateBytes);
+  pdfDoc.registerFontkit(fontkit);
   const page = pdfDoc.getPages()[0];
   const { width, height } = page.getSize();
 
@@ -116,8 +121,22 @@ export const generateInvoicePdfBlob = async ({ data = {}, profile = {}, brokerag
     viewportHeight: typeof window !== 'undefined' ? window.innerHeight : undefined,
   });
 
-  const regularFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const [regularFontResponse, semiBoldFontResponse] = await Promise.all([
+    fetch(POPPINS_REGULAR_SRC),
+    fetch(POPPINS_SEMIBOLD_SRC),
+  ]);
+
+  if (!regularFontResponse.ok || !semiBoldFontResponse.ok) {
+    throw new Error('Unable to load Poppins font files');
+  }
+
+  const [regularFontBytes, semiBoldFontBytes] = await Promise.all([
+    regularFontResponse.arrayBuffer(),
+    semiBoldFontResponse.arrayBuffer(),
+  ]);
+
+  const regularFont = await pdfDoc.embedFont(regularFontBytes);
+  const boldFont = await pdfDoc.embedFont(semiBoldFontBytes);
   const fields = buildPdfTextFields(data, profile, brokerageAmount, totalAmount, executiveBonus);
 
   const drawField = (key, options = {}) => {

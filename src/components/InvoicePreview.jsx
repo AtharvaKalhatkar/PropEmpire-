@@ -27,7 +27,7 @@ export default function InvoicePreview({ data, profile, brokerageAmount, totalAm
 	};
 
 	return (
-		<div style={{ fontFamily: 'Arial, Helvetica, sans-serif', color: '#000' }}>
+		<div style={{ fontFamily: 'Poppins, Arial, Helvetica, sans-serif', color: '#000' }}>
 			<div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '20px' }}>
 				<button
 					style={BTN('#004b73')}

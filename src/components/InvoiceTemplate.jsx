@@ -9,7 +9,7 @@ const Field = ({ x, y, value, style = {} }) => (
       whiteSpace: 'nowrap',
       lineHeight: 1,
       color: '#000',
-      fontFamily: 'Arial, Helvetica, sans-serif',
+      fontFamily: 'Poppins, Arial, Helvetica, sans-serif',
       ...style,
     }}
   >
@@ -77,7 +77,7 @@ export default function InvoiceTemplate({ data = {}, profile = {}, brokerageAmou
         style={{
           position: 'absolute',
           inset: 0,
-          fontFamily: 'Arial, Helvetica, sans-serif',
+          fontFamily: 'Poppins, Arial, Helvetica, sans-serif',
           color: '#000',
         }}
       >
