@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { FileText, Download, Calendar, DollarSign, Eye, X, Printer, MessageCircle, Mail } from 'lucide-react';
 import { getInvoices, getProfile, deleteInvoice } from '../db';
-import { generateInvoicePdfBlob } from '../utils/invoiceTemplate';
+import { generateInvoicePdfBlob, formatINR } from '../utils/invoiceTemplate';
 import { downloadPdfBlob } from '../utils/pdf';
 import { Edit2 } from 'lucide-react';
 import { exportRowsToXlsx } from '../utils/spreadsheet';
@@ -242,7 +242,7 @@ export default function Deals({ onEditInvoice }) {
                     <td style={{ padding: '1rem' }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                     <td style={{ padding: '1rem', fontWeight: '500' }}>{inv.customerName}</td>
                     <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>{inv.projectName}</td>
-                    <td style={{ padding: '1rem', fontWeight: '600', color: 'var(--primary-blue)' }}>₹ {calculateTotal(inv).toLocaleString('en-IN')}</td>
+                    <td style={{ padding: '1rem', fontWeight: '600', color: 'var(--primary-blue)' }}>₹ {formatINR(calculateTotal(inv))}</td>
                     <td style={{ padding: '1rem', textAlign: 'center' }}>
                       <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
                         <button 

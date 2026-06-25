@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PlusCircle, TrendingUp, Users, MapPin, DollarSign, Image } from 'lucide-react';
 import { getInvoices, getClients } from '../db';
+import { formatINR } from '../utils/invoiceTemplate';
 
 export default function Dashboard({ onNavigate }) {
   const [stats, setStats] = useState({ earnings: 0, activeLeads: 0 });
@@ -42,7 +43,7 @@ export default function Dashboard({ onNavigate }) {
             <DollarSign size={20} color="white" />
             <h3 style={{ fontSize: '1rem', color: 'white', margin: 0 }}>Total Earnings</h3>
           </div>
-          <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, wordBreak: 'break-word', color: 'white' }}>₹ {stats.earnings.toLocaleString('en-IN')}</p>
+          <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, wordBreak: 'break-word', color: 'white' }}>₹ {formatINR(stats.earnings)}</p>
         </div>
 
         <div className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -119,7 +120,7 @@ export default function Dashboard({ onNavigate }) {
                     <p style={{ margin: 0, fontSize: '0.875rem' }}>{inv.projectName} • Inv #{inv.invoiceNo}</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p style={{ margin: 0, fontWeight: '600', color: 'var(--primary-blue)' }}>₹ {total.toLocaleString('en-IN')}</p>
+                    <p style={{ margin: 0, fontWeight: '600', color: 'var(--primary-blue)' }}>₹ {formatINR(total)}</p>
                     <p style={{ margin: 0, fontSize: '0.75rem' }}>{new Date(inv.date).toLocaleDateString()}</p>
                   </div>
                 </div>

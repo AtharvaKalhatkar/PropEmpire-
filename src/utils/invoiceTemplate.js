@@ -23,10 +23,10 @@ export const POSITIONS = {
   brokerageNumber: { x: 250, y: 454 },
   executiveBonusParticular: { x: 445, y: 525 },
 
-  taxRate: { x: 400, y: 472 },
+  taxRate: { x: 390, y: 472 },
 
-  brokerageAmount: { x: 460, y: 455 },
-  subtotalAmount: { x: 460, y: 472 },
+  brokerageAmount: { x: 440, y: 455 },
+  subtotalAmount: { x: 440, y: 472 },
   executiveBonus: { x: 250, y: 500 },
   totalAmount: { x: 440, y: 550 },
   amountInWords: { x: 200, y: 574 },
@@ -72,7 +72,7 @@ export const formatDate = (value) => {
 };
 
 export const formatINR = (value) => {
-  const numericValue = Number(value) || 0;
+  const numericValue = Math.round(Number(value)) || 0;
   return numericValue.toLocaleString('en-IN');
 };
 
@@ -170,8 +170,8 @@ export const generateInvoicePdfBlob = async ({ data = {}, profile = {}, brokerag
   drawField('brokerageAmount', { fontSize: 10, bold: true, maxWidth: 120 });
   drawField('subtotalAmount', { fontSize: 10, bold: true, maxWidth: 120 });
   drawField('executiveBonus', { fontSize: 10, bold: false, maxWidth: 120 });
-  drawField('totalAmount', { fontSize: 13, bold: true, maxWidth: 120 });
-  drawField('amountInWords', { fontSize: 11, bold: true, maxWidth: 600 });
+  drawField('totalAmount', { fontSize: 10, bold: true, maxWidth: 120 });
+  drawField('amountInWords', { fontSize: 9, bold: true, maxWidth: 600 });
   drawField('bankFavouringName', { fontSize: 14, bold: true, maxWidth: 320 });
   drawField('reraName', { fontSize: 14, bold: true, maxWidth: 320 });
   drawField('accountType', { fontSize: 14, bold: true, maxWidth: 260 });

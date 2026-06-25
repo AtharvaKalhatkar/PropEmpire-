@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Save, Printer, FileText, Home } from 'lucide-react';
 import InvoiceTemplate from '../components/InvoiceTemplate';
-import { generateInvoicePdfBlob } from '../utils/invoiceTemplate';
+import { generateInvoicePdfBlob, formatINR } from '../utils/invoiceTemplate';
 import { saveInvoice, getProfile, getInvoices } from '../db';
 import { downloadPdfBlob } from '../utils/pdf';
 import { Download, Share2, MessageCircle, X } from 'lucide-react';
@@ -316,15 +316,15 @@ export default function CreateInvoice({ onNavigate, editingInvoice, setEditingIn
         <div style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: 'var(--bg-color)', borderRadius: 'var(--radius-md)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <span>Brokerage Amount:</span>
-            <strong>₹ {calculateBrokerage().toLocaleString('en-IN')}</strong>
+            <strong>₹ {formatINR(calculateBrokerage())}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
             <span>Executive Bonus:</span>
-            <strong>₹ {Number(formData.executiveBonus).toLocaleString('en-IN')}</strong>
+            <strong>₹ {formatINR(formData.executiveBonus)}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '1rem', marginTop: '1rem', fontSize: '1.25rem' }}>
             <strong>Total Amount:</strong>
-            <strong style={{ color: 'var(--primary-blue)' }}>₹ {calculateTotal().toLocaleString('en-IN')}</strong>
+            <strong style={{ color: 'var(--primary-blue)' }}>₹ {formatINR(calculateTotal())}</strong>
           </div>
         </div>
       </div>
