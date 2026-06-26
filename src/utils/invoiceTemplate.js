@@ -13,6 +13,7 @@ export const POSITIONS = {
   date: { x: 463, y: 170 },
 
   billedToName: { x: 95, y: 190 },
+  billedToAddress: { x: 95, y: 204 },
   gstin: { x: 105, y: 230 },
 
   customerName: { x: 250, y: 390 },
@@ -80,6 +81,7 @@ const buildPdfTextFields = (data, profile, brokerageAmount, totalAmount, executi
   invoiceNo: data.invoiceNo || '',
   date: formatDate(data.date),
   billedToName: data.billedToName || data.customerName || '',
+  billedToAddress: data.billedToAddress || '',
   gstin: data.billedToGstin || '',
   customerName: data.customerName || '',
   projectName: data.projectName || '',
@@ -144,20 +146,29 @@ export const generateInvoicePdfBlob = async ({ data = {}, profile = {}, brokerag
     if (!value) return;
 
     const fontSize = options.fontSize || 14;
-    page.drawText(value, {
-      x: POSITIONS[key].x,
-      y: height - POSITIONS[key].y - fontSize * 0.85,
-      size: fontSize,
-      font: options.bold === false ? regularFont : boldFont,
-      color: rgb(0, 0, 0),
-      maxWidth: options.maxWidth,
-      lineHeight: options.lineHeight,
+    const lines = typeof value === 'string' && value.includes('\n') ? value.split('\n') : [value];
+
+    let currentY = POSITIONS[key].y;
+    const lineSpacing = options.lineHeight || fontSize;
+
+    lines.forEach((line) => {
+      page.drawText(line, {
+        x: POSITIONS[key].x,
+        y: height - currentY - fontSize * 0.85,
+        size: fontSize,
+        font: options.bold === false ? regularFont : boldFont,
+        color: rgb(0, 0, 0),
+        maxWidth: options.maxWidth,
+        lineHeight: options.lineHeight,
+      });
+      currentY += lineSpacing;
     });
   };
 
   drawField('invoiceNo', { fontSize: 10, bold: true });
   drawField('date', { fontSize: 10, bold: true });
-  drawField('billedToName', { fontSize: 12, bold: false, maxWidth: 500 });
+  drawField('billedToName', { fontSize: 10, bold: false, maxWidth: 500 });
+  drawField('billedToAddress', { fontSize: 8, bold: false, maxWidth: 500, lineHeight: 9 });
   drawField('gstin', { fontSize: 10, bold: false, maxWidth: 500 });
   drawField('customerName', { fontSize: 10, bold: false, maxWidth: 220 });
   drawField('projectName', { fontSize: 10, bold: false, maxWidth: 220 });

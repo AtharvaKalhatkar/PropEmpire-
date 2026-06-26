@@ -176,15 +176,20 @@ export async function deleteClient(id) {
   return true;
 }
 
+const processInvoiceSingle = (invoice) => {
+  if (!invoice) return invoice;
+  // Clone to avoid mutating original objects in local cache
+  const cloned = { ...invoice };
+  if (cloned.billedToAddress && cloned.billedToAddress.startsWith('DEVELOPER_NAME:')) {
+    const parts = cloned.billedToAddress.split('\n');
+    cloned.billedToName = parts[0].replace('DEVELOPER_NAME:', '');
+    cloned.billedToAddress = parts.slice(1).join('\n');
+  }
+  return cloned;
+};
+
 const processInvoices = (data) => {
-  return (data || []).map(invoice => {
-    if (invoice.billedToAddress && invoice.billedToAddress.startsWith('DEVELOPER_NAME:')) {
-      const parts = invoice.billedToAddress.split('\n');
-      invoice.billedToName = parts[0].replace('DEVELOPER_NAME:', '');
-      invoice.billedToAddress = parts.slice(1).join('\n');
-    }
-    return invoice;
-  });
+  return (data || []).map(processInvoiceSingle);
 };
 
 export async function getInvoices() {
@@ -199,7 +204,7 @@ export async function getInvoices() {
     });
   }
 
-  if (cached) return cached;
+  if (cached) return processInvoices(cached);
 
   if (supabase) {
     const { data, error } = await supabase
@@ -243,7 +248,7 @@ export async function saveInvoice(invoiceData) {
     }
 
     await localforage.removeItem('invoices_cache');
-    return response.data;
+    return processInvoiceSingle(response.data);
   }
 
   // Offline-only mode
@@ -257,7 +262,7 @@ export async function saveInvoice(invoiceData) {
     invoices.unshift(payload);
   }
   await localforage.setItem('invoices_cache', invoices);
-  return payload;
+  return processInvoiceSingle(payload);
 }
 
 export async function deleteInvoice(id) {

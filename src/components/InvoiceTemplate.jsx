@@ -21,6 +21,13 @@ const PREVIEW_FIELD_STYLES = {
   invoiceNo: { fontSize: '14px', fontWeight: 600 },
   date: { fontSize: '14px', fontWeight: 600 },
   billedToName: { fontSize: '14px', fontWeight: 600 },
+  billedToAddress: {
+    fontSize: '9px',
+    fontWeight: 400,
+    whiteSpace: 'pre-wrap',
+    lineHeight: '1.1',
+    maxWidth: '500px',
+  },
   gstin: { fontSize: '14px', fontWeight: 600 },
   customerName: { fontSize: '13px', fontWeight: 600 },
   projectName: { fontSize: '13px', fontWeight: 600 },
@@ -42,6 +49,7 @@ const PREVIEW_FIELD_STYLES = {
 export default function InvoiceTemplate({ data = {}, profile = {}, brokerageAmount = 0, totalAmount = 0, executiveBonus = 0 }) {
   const invoiceDate = formatDate(data.date);
   const billedToName = data.billedToName || data.customerName || '';
+  const billedToAddress = data.billedToAddress || '';
   const gstin = data.billedToGstin || '';
   const customerName = data.customerName || '';
   const projectName = data.projectName || '';
@@ -99,6 +107,7 @@ export default function InvoiceTemplate({ data = {}, profile = {}, brokerageAmou
         <Field x={POSITIONS.date.x} y={POSITIONS.date.y} value={invoiceDate} style={PREVIEW_FIELD_STYLES.date} />
 
         <Field x={POSITIONS.billedToName.x} y={POSITIONS.billedToName.y} value={billedToName} style={PREVIEW_FIELD_STYLES.billedToName} />
+        <Field x={POSITIONS.billedToAddress.x} y={POSITIONS.billedToAddress.y} value={billedToAddress} style={PREVIEW_FIELD_STYLES.billedToAddress} />
         <Field x={POSITIONS.gstin.x} y={POSITIONS.gstin.y} value={gstin} style={PREVIEW_FIELD_STYLES.gstin} />
 
         <Field x={POSITIONS.customerName.x} y={POSITIONS.customerName.y} value={customerName} style={PREVIEW_FIELD_STYLES.customerName} />
