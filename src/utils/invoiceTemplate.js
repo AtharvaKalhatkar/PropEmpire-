@@ -167,10 +167,10 @@ export const generateInvoicePdfBlob = async ({ data = {}, profile = {}, brokerag
   drawField('brokerageNumber', { fontSize: 9, bold: false, maxWidth: 220 });
   drawField('executiveBonusParticular', { fontSize: 12, bold: true, maxWidth: 220 });
   drawField('taxRate', { fontSize: 10, bold: true, maxWidth: 90 });
-  drawField('brokerageAmount', { fontSize: 10, bold: true, maxWidth: 120 });
-  drawField('subtotalAmount', { fontSize: 10, bold: true, maxWidth: 120 });
-  drawField('executiveBonus', { fontSize: 10, bold: false, maxWidth: 120 });
-  drawField('totalAmount', { fontSize: 10, bold: true, maxWidth: 120 });
+  drawField('brokerageAmount', { fontSize: 9, bold: true, maxWidth: 120 });
+  drawField('subtotalAmount', { fontSize: 9, bold: true, maxWidth: 120 });
+  drawField('executiveBonus', { fontSize: 9, bold: false, maxWidth: 120 });
+  drawField('totalAmount', { fontSize: 13, bold: true, maxWidth: 120 });
   drawField('amountInWords', { fontSize: 9, bold: true, maxWidth: 600 });
   drawField('bankFavouringName', { fontSize: 14, bold: true, maxWidth: 320 });
   drawField('reraName', { fontSize: 14, bold: true, maxWidth: 320 });

@@ -14,11 +14,11 @@ const TABS = ['dashboard', 'deals', 'invoice', 'clients'];
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark');
   const [editingInvoice, setEditingInvoice] = useState(null);
 
   useEffect(() => {
-    document.body.classList.toggle('dark-theme', theme === 'dark');
+    document.body.classList.toggle('light-theme', theme === 'light');
     localStorage.setItem('theme', theme);
   }, [theme]);
 
@@ -62,19 +62,19 @@ export default function App() {
       <header className="app-header">
         <div className="app-logo">
           <img src={logoImg} alt="PropEmpire" />
-          PropEmpire
+          <span>PropEmpire</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button className="theme-toggle" onClick={() => handleTabChange('settings')}>
-            <SettingsIcon size={20} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <button className="theme-toggle" onClick={() => handleTabChange('settings')} aria-label="Settings">
+            <SettingsIcon size={18} strokeWidth={1.8} />
           </button>
-          <button className="theme-toggle" onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
-            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          <button className="theme-toggle" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label="Toggle theme">
+            {theme === 'dark' ? <Sun size={18} strokeWidth={1.8} /> : <Moon size={18} strokeWidth={1.8} />}
           </button>
         </div>
       </header>
 
-      <main className="main-content animate-fade-in">
+      <main className="main-content animate-fade-in" key={activeTab}>
         {renderPage()}
       </main>
 
@@ -88,8 +88,9 @@ export default function App() {
               key={tab}
               className={`nav-item ${activeTab === tab ? 'active' : ''}`}
               onClick={() => handleTabChange(tab)}
+              aria-label={labels[tab]}
             >
-              <Icon />
+              <Icon strokeWidth={activeTab === tab ? 2.2 : 1.6} />
               <span>{labels[tab]}</span>
             </button>
           );

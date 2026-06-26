@@ -1,127 +1,146 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, TrendingUp, Users, MapPin, DollarSign, Image } from 'lucide-react';
+import { PlusCircle, MapPin, Users, Image, ArrowUpRight, TrendingUp } from 'lucide-react';
 import { getInvoices, getClients } from '../db';
 import { formatINR } from '../utils/invoiceTemplate';
 
 export default function Dashboard({ onNavigate }) {
-  const [stats, setStats] = useState({ earnings: 0, activeLeads: 0 });
+  const [stats, setStats] = useState({ earnings: 0, activeLeads: 0, totalDeals: 0 });
   const [recentInvoices, setRecentInvoices] = useState([]);
 
   useEffect(() => {
-    const loadData = async () => {
-      const invoices = await getInvoices();
-      const clients = await getClients();
-      
+    Promise.all([getInvoices(), getClients()]).then(([invoices, clients]) => {
       const totalEarnings = invoices.reduce((sum, inv) => {
         const broker = (Number(inv.agreementValue) * Number(inv.brokeragePercent)) / 100;
         return sum + broker + Number(inv.executiveBonus);
       }, 0);
-      
-      const activeLeads = clients.filter(c => c.status !== 'Closed').length;
-      
-      setStats({ earnings: totalEarnings, activeLeads });
-      setRecentInvoices(invoices.slice(0, 3)); // top 3
-    };
-    
-    loadData();
+      setStats({
+        earnings: totalEarnings,
+        activeLeads: clients.filter(c => c.status !== 'Closed').length,
+        totalDeals: invoices.length,
+      });
+      setRecentInvoices(invoices.slice(0, 5));
+    });
   }, []);
 
+  const actions = [
+    { icon: PlusCircle, label: 'New Invoice', bg: 'var(--primary-subtle)', color: 'var(--primary)', tab: 'invoice' },
+    { icon: MapPin, label: 'Log Visit', bg: 'var(--success-subtle)', color: 'var(--success)', tab: 'visited' },
+    { icon: Users, label: 'Clients', bg: 'var(--danger-subtle)', color: 'var(--danger)', tab: 'clients' },
+    { icon: Image, label: 'Share Cards', bg: 'var(--warning-subtle)', color: 'var(--warning)', tab: 'cards' },
+  ];
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      <div>
-        <h1 style={{ marginBottom: '0.5rem' }}>Overview</h1>
-        <p>Welcome back! Here's your business at a glance.</p>
+    <div>
+      {/* Header */}
+      <div className="mb-24">
+        <h1 style={{ fontSize: 26, marginBottom: 2 }}>Overview</h1>
+        <p style={{ margin: 0 }}>Your business at a glance</p>
       </div>
 
-      {/* Stats Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-        <div className="card" style={{ background: 'var(--gradient-primary)', color: 'white', border: 'none', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', right: '-10%', top: '-20%', opacity: 0.1 }}>
-            <DollarSign size={120} />
+      {/* Stats Grid */}
+      <div className="grid-2 mb-24">
+        <div style={{
+          background: 'linear-gradient(135deg, var(--primary), #4f46e5)',
+          borderRadius: 'var(--radius)',
+          padding: '20px 18px',
+          color: 'white',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: '0 4px 20px rgba(99, 102, 241, 0.2)'
+        }}>
+          <div style={{ position: 'absolute', top: -20, right: -20, width: 80, height: 80, background: 'rgba(255,255,255,0.06)', borderRadius: '50%' }} />
+          <div style={{ fontSize: 11, fontWeight: 600, opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
+            Total Earnings
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', opacity: 0.9 }}>
-            <DollarSign size={20} color="white" />
-            <h3 style={{ fontSize: '1rem', color: 'white', margin: 0 }}>Total Earnings</h3>
+          <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1 }}>
+            ₹{formatINR(stats.earnings)}
           </div>
-          <p style={{ fontSize: '2.5rem', fontWeight: '800', margin: 0, wordBreak: 'break-word', color: 'white' }}>₹ {formatINR(stats.earnings)}</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 10, fontSize: 11, fontWeight: 600, opacity: 0.8 }}>
+            <TrendingUp size={12} /> {stats.totalDeals} deals closed
+          </div>
         </div>
 
-        <div className="card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'var(--text-muted)' }}>
-            <Users size={20} />
-            <h3 style={{ fontSize: '1rem', color: 'inherit', margin: 0 }}>Active Leads</h3>
+        <div style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          borderRadius: 'var(--radius)',
+          padding: '20px 18px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <div style={{ position: 'absolute', top: -20, right: -20, width: 80, height: 80, background: 'var(--primary-subtle)', borderRadius: '50%' }} />
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 10 }}>
+            Active Leads
           </div>
-          <p style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)', margin: 0 }}>{stats.activeLeads}</p>
+          <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1 }}>
+            {stats.activeLeads}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 10, fontSize: 11, fontWeight: 600, color: 'var(--text-tertiary)' }}>
+            <Users size={12} /> CRM pipeline
+          </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div>
-        <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem' }}>Quick Actions</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
-          <button 
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}
-            onClick={() => onNavigate('invoice')}
-          >
-            <div style={{ width: '56px', height: '56px', borderRadius: '1rem', backgroundColor: '#eff6ff', color: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-sm)' }}>
-              <PlusCircle size={28} />
-            </div>
-            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-main)' }}>New Invoice</span>
-          </button>
-          
-          <button 
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}
-            onClick={() => onNavigate('visited')}
-          >
-            <div style={{ width: '56px', height: '56px', borderRadius: '1rem', backgroundColor: '#f0fdf4', color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-sm)' }}>
-              <MapPin size={28} />
-            </div>
-            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-main)' }}>Visits</span>
-          </button>
-          
-          <button 
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}
-            onClick={() => onNavigate('clients')}
-          >
-            <div style={{ width: '56px', height: '56px', borderRadius: '1rem', backgroundColor: '#fef2f2', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-sm)' }}>
-              <Users size={28} />
-            </div>
-            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-main)' }}>Clients</span>
-          </button>
-          
-          <button 
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}
-            onClick={() => onNavigate('cards')}
-          >
-            <div style={{ width: '56px', height: '56px', borderRadius: '1rem', backgroundColor: '#fff7ed', color: '#ea580c', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-sm)' }}>
-              <Image size={28} />
-            </div>
-            <span style={{ fontSize: '0.875rem', fontWeight: '600', color: 'var(--text-main)' }}>Cards</span>
-          </button>
+      <div className="mb-24">
+        <div className="section-title">Quick Actions</div>
+        <div className="grid-2">
+          {actions.map(a => {
+            const Icon = a.icon;
+            return (
+              <button key={a.label} className="quick-action" onClick={() => onNavigate(a.tab)}>
+                <div className="icon-wrap" style={{ background: a.bg, color: a.color }}>
+                  <Icon size={22} strokeWidth={1.8} />
+                </div>
+                <span>{a.label}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Recent Activity */}
-      <div className="card" style={{ padding: '0' }}>
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
-          <h2 style={{ fontSize: '1.25rem', margin: 0 }}>Recent Invoices</h2>
+      {/* Recent Invoices */}
+      <div>
+        <div className="flex items-center justify-between mb-12">
+          <div className="section-title" style={{ margin: 0 }}>Recent Invoices</div>
+          {recentInvoices.length > 0 && (
+            <button
+              onClick={() => onNavigate('deals')}
+              style={{
+                background: 'none', border: 'none', color: 'var(--primary)',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: 2
+              }}
+            >
+              View all <ArrowUpRight size={13} />
+            </button>
+          )}
         </div>
-        <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
           {recentInvoices.length === 0 ? (
-            <p style={{ color: 'var(--text-muted)' }}>No invoices generated yet.</p>
+            <div className="empty-state"><p>No invoices yet</p></div>
           ) : (
-            recentInvoices.map(inv => {
-              const broker = (Number(inv.agreementValue) * Number(inv.brokeragePercent)) / 100;
-              const total = broker + Number(inv.executiveBonus);
+            recentInvoices.map((inv, idx) => {
+              const total = ((Number(inv.agreementValue) * Number(inv.brokeragePercent)) / 100) + Number(inv.executiveBonus);
               return (
-                <div key={inv.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem', borderBottom: '1px solid var(--border-color)' }}>
-                  <div>
-                    <h4 style={{ margin: 0, color: 'var(--text-main)' }}>{inv.customerName}</h4>
-                    <p style={{ margin: 0, fontSize: '0.875rem' }}>{inv.projectName} • Inv #{inv.invoiceNo}</p>
+                <div key={inv.id} style={{
+                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                  padding: '14px 18px',
+                  borderBottom: idx < recentInvoices.length - 1 ? '1px solid var(--border)' : 'none',
+                  transition: 'background 150ms',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-hover)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                onClick={() => onNavigate('deals')}
+                >
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)', marginBottom: 2 }}>{inv.customerName}</div>
+                    <div style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{inv.projectName} • #{inv.invoiceNo}</div>
                   </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <p style={{ margin: 0, fontWeight: '600', color: 'var(--primary-blue)' }}>₹ {formatINR(total)}</p>
-                    <p style={{ margin: 0, fontSize: '0.75rem' }}>{new Date(inv.date).toLocaleDateString()}</p>
+                  <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
+                    <div className="amount" style={{ fontSize: 14 }}>₹{formatINR(total)}</div>
+                    <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 2 }}>{new Date(inv.date).toLocaleDateString('en-GB')}</div>
                   </div>
                 </div>
               );

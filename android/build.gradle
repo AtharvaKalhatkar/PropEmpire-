@@ -22,6 +22,18 @@ allprojects {
         google()
         mavenCentral()
     }
+    // Force Java 17 on ALL modules (overrides Capacitor plugin defaults of Java 21)
+    // This runs after each subproject is evaluated, so it overrides compileOptions
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {
