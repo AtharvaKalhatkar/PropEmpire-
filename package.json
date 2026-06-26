@@ -7,7 +7,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "dev": "vite",
-    "build": "vite build && node -e \"require('fs').writeFileSync('dist/index.html',require('fs').readFileSync('dist/index.html','utf8').replace(/ crossorigin/g,''))\"",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "postinstall": "node scripts/patch-java17.js"
